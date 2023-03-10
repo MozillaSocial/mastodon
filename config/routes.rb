@@ -716,7 +716,8 @@ Rails.application.routes.draw do
   get '/about/more', to: redirect('/about')
 
   get '/privacy-policy', to: 'privacy#show', as: :privacy_policy
-  get '/terms',          to: redirect('/privacy-policy')
+  get '/terms',          to: redirect('/terms-of-service.html')
+  get '/content-moderation-policy', to: redirect('/content-moderation-policy.html')
 
   match '/', via: [:post, :put, :patch, :delete], to: 'application#raise_not_found', format: false
   match '*unmatched_route', via: :all, to: 'application#raise_not_found', format: false
