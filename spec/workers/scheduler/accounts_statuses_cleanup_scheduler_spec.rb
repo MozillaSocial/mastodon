@@ -5,12 +5,17 @@ require 'rails_helper'
 describe Scheduler::AccountsStatusesCleanupScheduler do
   subject { described_class.new }
 
-  let!(:account_alice) { Fabricate(:account, domain: nil, username: 'alice') }
-  let!(:account_bob) { Fabricate(:account, domain: nil, username: 'bob') }
-  let!(:account_chris) { Fabricate(:account, domain: nil, username: 'chris') }
-  let!(:account_dave) { Fabricate(:account, domain: nil, username: 'dave') }
-  let!(:account_erin) { Fabricate(:account, domain: nil, username: 'erin') }
-  let!(:remote) { Fabricate(:account) }
+  let!(:account1)  { Fabricate(:account, domain: nil) }
+  let!(:account2)  { Fabricate(:account, domain: nil) }
+  let!(:account3)  { Fabricate(:account, domain: nil) }
+  let!(:account4)  { Fabricate(:account, domain: nil) }
+  let!(:account5)  { Fabricate(:account, domain: nil) }
+  let!(:remote)    { Fabricate(:account) }
+
+  let!(:policy1)   { Fabricate(:account_statuses_cleanup_policy, account: account1) }
+  let!(:policy2)   { Fabricate(:account_statuses_cleanup_policy, account: account3) }
+  let!(:policy3)   { Fabricate(:account_statuses_cleanup_policy, account: account4, enabled: false) }
+  let!(:policy4)   { Fabricate(:account_statuses_cleanup_policy, account: account5) }
 
   let(:queue_size)       { 0 }
   let(:queue_latency)    { 0 }
@@ -30,6 +35,25 @@ describe Scheduler::AccountsStatusesCleanupScheduler do
 
     sidekiq_stats_stub = instance_double(Sidekiq::Stats)
     allow(Sidekiq::Stats).to receive(:new).and_return(sidekiq_stats_stub)
+
+    # Create a bunch of old statuses
+    10.times do
+      Fabricate(:status, account: account1, created_at: 3.years.ago)
+      Fabricate(:status, account: account2, created_at: 3.years.ago)
+      Fabricate(:status, account: account3, created_at: 3.years.ago)
+      Fabricate(:status, account: account4, created_at: 3.years.ago)
+      Fabricate(:status, account: account5, created_at: 3.years.ago)
+      Fabricate(:status, account: remote, created_at: 3.years.ago)
+    end
+
+    # Create a bunch of newer statuses
+    5.times do
+      Fabricate(:status, account: account1, created_at: 3.minutes.ago)
+      Fabricate(:status, account: account2, created_at: 3.minutes.ago)
+      Fabricate(:status, account: account3, created_at: 3.minutes.ago)
+      Fabricate(:status, account: account4, created_at: 3.minutes.ago)
+      Fabricate(:status, account: remote, created_at: 3.minutes.ago)
+    end
   end
 
   describe '#under_load?' do
@@ -50,8 +74,8 @@ describe Scheduler::AccountsStatusesCleanupScheduler do
   end
 
   describe '#compute_budget' do
-    context 'with a single thread' do
-      let(:process_set_stub) { [{ 'concurrency' => 1, 'queues' => %w(push default) }] }
+    context 'on a single thread' do
+      let(:process_set_stub) { [ { 'concurrency' => 1, 'queues' => ['push', 'default'] } ] }
 
       it 'returns a low value' do
         expect(subject.compute_budget).to be < 10
@@ -133,6 +157,23 @@ describe Scheduler::AccountsStatusesCleanupScheduler do
           .and(change { account_erin.statuses.count })
       end
 
+      it 'eventually deletes every deletable toot given enough runs' do
+        stub_const 'Scheduler::AccountsStatusesCleanupScheduler::MAX_BUDGET', 4
+
+        expect { 10.times { subject.perform } }.to change { Status.count }.by(-30)
+      end
+
+      it 'correctly round-trips between users across several runs' do
+        stub_const 'Scheduler::AccountsStatusesCleanupScheduler::MAX_BUDGET', 3
+        stub_const 'Scheduler::AccountsStatusesCleanupScheduler::PER_ACCOUNT_BUDGET', 2
+
+        expect { 3.times { subject.perform } }
+          .to change { Status.count }.by(-3 * 3)
+          .and change { account1.statuses.count }
+          .and change { account3.statuses.count }
+          .and change { account5.statuses.count }
+      end
+
       context 'when given a big budget' do
         let(:process_set_stub) { [{ 'concurrency' => 400, 'queues' => %w(push default) }] }
 
@@ -142,7 +183,7 @@ describe Scheduler::AccountsStatusesCleanupScheduler do
 
         it 'correctly handles looping in a single run' do
           expect(subject.compute_budget).to eq(400)
-          expect { subject.perform }.to change(Status, :count).by(-cleanable_statuses_count)
+          expect { subject.perform }.to change { Status.count }.by(-30)
         end
       end
 
@@ -156,15 +197,8 @@ describe Scheduler::AccountsStatusesCleanupScheduler do
 
         it 'does not get stuck' do
           expect(subject.compute_budget).to eq(400)
-          expect { subject.perform }.to_not change(Status, :count)
+          expect { subject.perform }.to_not change { Status.count }
         end
-      end
-
-      def cleanable_statuses_count
-        Status
-          .where(account_id: [account_alice, account_chris, account_erin]) # Accounts with enabled policies
-          .where('created_at < ?', 2.weeks.ago) # Policy defaults is 2.weeks
-          .count
       end
     end
   end

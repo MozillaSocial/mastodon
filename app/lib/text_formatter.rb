@@ -61,7 +61,7 @@ class TextFormatter
       cutoff      = url[prefix.length..-1].length > 30
 
       <<~HTML.squish.html_safe # rubocop:disable Rails/OutputSafety
-        <a href="#{h(url)}" target="_blank" rel="#{rel.join(' ')}" translate="no"><span class="invisible">#{h(prefix)}</span><span class="#{cutoff ? 'ellipsis' : ''}">#{h(display_url)}</span><span class="invisible">#{h(suffix)}</span></a>
+        <a href="#{h(url)}" target="_blank" rel="#{rel.join(' ')}"><span class="invisible">#{h(prefix)}</span><span class="#{cutoff ? 'ellipsis' : ''}">#{h(display_url)}</span><span class="invisible">#{h(suffix)}</span></a>
       HTML
     rescue Addressable::URI::InvalidURIError, IDN::Idna::IdnaError
       h(url)

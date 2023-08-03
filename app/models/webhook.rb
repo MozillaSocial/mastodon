@@ -34,7 +34,6 @@ class Webhook < ApplicationRecord
 
   validate :validate_events
   validate :validate_permissions
-  validate :validate_template
 
   before_validation :strip_events
   before_validation :generate_secret
@@ -61,8 +60,6 @@ class Webhook < ApplicationRecord
       :manage_users
     when 'report.created'
       :manage_reports
-    when 'status.created', 'status.updated'
-      :view_devops
     end
   end
 
@@ -85,6 +82,10 @@ class Webhook < ApplicationRecord
     rescue Parslet::ParseFailed
       errors.add(:template, :invalid)
     end
+  end
+
+  def validate_permissions
+    errors.add(:events, :invalid_permissions) if defined?(@current_account) && required_permissions.any? { |permission| !@current_account.user_role.can?(permission) }
   end
 
   def strip_events

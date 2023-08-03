@@ -522,7 +522,7 @@ module Mastodon::CLI
       if options[:all]
         User.pending.find_each(&:approve!)
         say('OK', :green)
-      elsif options[:number]&.positive?
+      elsif options[:number]
         User.pending.order(created_at: :asc).limit(options[:number]).each(&:approve!)
         say('OK', :green)
       elsif username.present?
