@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
   include SessionTrackingConcern
   include CacheConcern
   include DomainControlHelper
+  include GleanHelper
 
   helper_method :current_account
   helper_method :current_session
@@ -179,6 +180,6 @@ class ApplicationController < ActionController::Base
   def emit_glean_log
     yield
   ensure
-    Rails.logger.info "hello I am special"
+    GleanHelper::produce_glean_log()
   end
 end
