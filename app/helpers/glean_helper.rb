@@ -6,18 +6,18 @@ GLEAN_EVENT_MOZLOG_TYPE = 'glean-server-event';
 
 module GleanHelper
     class ApiEventsServerEvent
-        def initialize(application_id, app_display_version, app_channel, logger_name, user_agent, ip_address, user_id, account_id)
-           @application_id=application_id,
-           @app_display_version=app_display_version,
+        def initialize(application_id, app_display_version, app_channel, logger_name, user_agent, ip_address, user_id, account_id, path, controller, method, status_code)
+           @application_id=application_id
+           @app_display_version=app_display_version
            @app_channel=app_channel
            @logger_name=logger_name
-           @user_agent=user_agent,
-           @ip_address=ip_address,
-           @user_id=user_id,
-           @account_id=account_id,
-           @path=path,
-           @controller=controller,
-           @method=method,
+           @user_agent=user_agent
+           @ip_address=ip_address
+           @user_id=user_id
+           @account_id=account_id
+           @path=path
+           @controller=controller
+           @method=method
            @status_code=status_code
         end
         def record()
@@ -44,11 +44,10 @@ module GleanHelper
                           "extras" => {
                             "user_id" => @user_id,
                             "account_id" => @account_id,
-                            "path"=path,
-           "controller"=@controller,
-           "method"=@method,
-           "status_code"=@status_code
-        end
+                            "path"=> @path,
+           "controller"=> @controller,
+           "method"=> @method,
+           "status_code"=> @status_code
                           }
                         },
                       }
@@ -59,7 +58,7 @@ module GleanHelper
                 "document_type" => 'api-events',
                 "document_version" => '1',
                 "document_id" => SecureRandom.uuid,
-                    "user_agent" => @user_agent,
+                "user_agent" => @user_agent,
                 "ip_address" => @ip_address,
                 "payload" => serialized_event_payload,
               }
@@ -73,15 +72,19 @@ module GleanHelper
     end
 end
 
-# include GleanHelper
+include GleanHelper
 
-# GleanHelper::ApiEventsServerEvent.new(
-#     "test",
-#     "0.0.1",
-#     "development",
-#     "moso-mastodon-server-glean",
-#     "test",
-#     "127.0.0.1",
-#     "test",
-#     "test"
-# ).record
+GleanHelper::ApiEventsServerEvent.new(
+    "test",
+    "0.0.1",
+    "development",
+    "moso-mastodon-server-glean",
+    "test",
+    "127.0.0.1",
+    "test",
+    "test",
+    "test",
+    "test",
+    "test",
+    "test"
+).record
