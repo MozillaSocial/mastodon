@@ -72,19 +72,19 @@ module GleanHelper
     end
 end
 
-include GleanHelper
+# include GleanHelper
 
-GleanHelper::ApiEventsServerEvent.new(
-    "test",
-    "0.0.1",
-    "development",
-    "moso-mastodon-server-glean",
-    "test",
-    "127.0.0.1",
-    "test",
-    "test",
-    "test",
-    "test",
-    "test",
-    "test"
-).record
+# GleanHelper::ApiEventsServerEvent.new(
+#     "test",
+#     "0.0.1",
+#     "development",
+#     "moso-mastodon-server-glean",
+#     "test",
+#     "127.0.0.1",
+#     "test",
+#     "test",
+#     "test",
+#     "test",
+#     "test",
+#     "test"
+# ).record
