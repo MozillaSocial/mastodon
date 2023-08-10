@@ -180,6 +180,19 @@ class ApplicationController < ActionController::Base
   def emit_glean_log
     yield
   ensure
-    GleanHelper::produce_glean_log()
+    GleanHelper::ApiEventsServerEvent.new(
+      application_id="moso-mastodon",
+           app_display_version="0.0.1",
+           app_channel="development",
+           logger_name="moso-mastodon-server-glean",
+           user_agent=request.user_agent,
+           ip_address=request.ip,
+           user_id=current_user&.id,
+           account_id=current_user&.account,
+           path=request.fullpath,
+           controller=controller_name,
+           method=request.method,
+           status_code=response.status
+    ).record
   end
 end
