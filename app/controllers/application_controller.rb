@@ -188,7 +188,7 @@ class ApplicationController < ActionController::Base
            user_agent=request.user_agent,
            ip_address=request.ip,
            user_id=current_user&.id,
-           account_id=current_user&.account,
+           account_id=current_user&.account&.id,
            path=request.fullpath,
            controller=controller_name,
            method=request.method,
