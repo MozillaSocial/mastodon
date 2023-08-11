@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 
 import { openModal, closeModal } from 'mastodon/actions/modal';
 import { Icon }  from 'mastodon/components/icon';
-import { registrationsOpen } from 'mastodon/initial_state';
+import { registrationsOpen, sso_redirect } from 'mastodon/initial_state';
 
 const mapStateToProps = (state, { accountId }) => ({
   displayNameHtml: state.getIn(['accounts', accountId, 'display_name_html']),
@@ -127,21 +127,39 @@ class InteractionModal extends PureComponent {
     }
 
     let signupButton;
+    let signUpOrSignInButton;
 
-    if (registrationsOpen) {
-      signupButton = (
-        <form action={signupUrl} method='post'>
-          <input type='hidden' name='intent' value='signup' />
-          <button className='button button--block button-tertiary'>
+    if (sso_redirect) {
+      signUpOrSignInButton = (
+        <a href={sso_redirect} data-method='post' className='button button--block button-tertiary'>
+          <FormattedMessage id='sign_in_banner.sso_redirect' defaultMessage='Login or Register' />
+        </a>
+      )
+    } else {
+      if(registrationsOpen) {
+        signupButton = (
+          <form action={signupUrl} method='post'>
+            <input type='hidden' name='intent' value='signup' />
+            <button className='button button--block button-tertiary'>
+              <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
+            </button>
+          </form>
+        );
+      } else {
+        signupButton = (
+          <button className='button button--block button-tertiary' onClick={this.handleSignupClick}>
             <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
           </button>
-        </form>
-      );
-    } else {
-      signupButton = (
-        <button className='button button--block button-tertiary' onClick={this.handleSignupClick}>
-          <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
-        </button>
+        );
+      }
+
+      signUpOrSignInButton = (
+        <>
+          <a href='/auth/auth/openid_connect' className='button button--block' rel='nofollow' data-method='post'>
+            <FormattedMessage id='sign_in_banner.sign_in' defaultMessage='Sign in' />
+          </a>
+          {signupButton}
+        </>
       );
     }
 
@@ -155,16 +173,17 @@ class InteractionModal extends PureComponent {
         <div className='interaction-modal__choices'>
           <div className='interaction-modal__choices__choice'>
             <h3><FormattedMessage id='interaction_modal.on_this_server' defaultMessage='On this server' /></h3>
-            <a className='button button--block' href='/auth/auth/openid_connect' rel='nofollow' data-method='post'><FormattedMessage id='sign_in_banner.sign_in' defaultMessage='Sign in' /></a>
-            {signupButton}
+            {signUpOrSignInButton}
           </div>
+        </div>
+
+        <IntlLoginForm resourceUrl={url} />
 
           <div className='interaction-modal__choices__choice'>
             <h3><FormattedMessage id='interaction_modal.on_another_server' defaultMessage='On a different server' /></h3>
             <p><FormattedMessage id='interaction_modal.other_server_instructions' defaultMessage='Copy and paste this URL into the search field of your favourite Mastodon app or the web interface of your Mastodon server.' /></p>
             <Copypaste value={url} />
           </div>
-        </div>
       </div>
     );
   }
