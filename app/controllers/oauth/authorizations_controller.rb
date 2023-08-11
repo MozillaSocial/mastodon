@@ -11,6 +11,16 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     p.form_action(false)
   end
 
+  def new
+    # redirect_to('https://mozilla.com')
+    puts "---authorizations controller new---"
+    response = HTTP.post('https://mastodon.mozsoc.local/auth/auth/openid_connect')
+    puts "---Do I get a response or what?---"
+    puts response.to_a[1]
+    puts response.to_a
+    redirect_to response.to_a[1]['Location']
+  end
+
   include Localized
 
   private

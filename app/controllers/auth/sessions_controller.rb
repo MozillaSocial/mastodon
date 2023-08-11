@@ -23,6 +23,14 @@ class Auth::SessionsController < Devise::SessionsController
     @login_is_suspicious = suspicious_sign_in?(user) unless user.nil?
   end
 
+  def new
+    # redirect_to('https://mozilla.com')
+    puts "---sessions controller new---"
+    response = HTTP.post('https://mastodon.mozsoc.local/auth/auth/openid_connect')
+    puts "---Do I get a response or what?---"
+    puts response.to_s
+  end
+
   def create
     super do |resource|
       # We only need to call this if this hasn't already been
