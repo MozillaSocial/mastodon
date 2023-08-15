@@ -12,7 +12,7 @@ import { fetchServer } from 'mastodon/actions/server';
 import { Avatar } from 'mastodon/components/avatar';
 import { Icon } from 'mastodon/components/icon';
 import { WordmarkLogo, SymbolLogo } from 'mastodon/components/logo';
-import { registrationsOpen, me } from 'mastodon/initial_state';
+import { registrationsOpen, me, sso_redirect } from 'mastodon/initial_state';
 
 const Account = connect(state => ({
   account: state.getIn(['accounts', me]),
@@ -73,32 +73,35 @@ class Header extends PureComponent {
         </>
       );
     } else {
-      let signupButton;
 
-      if (registrationsOpen) {
-        signupButton = (
-          <form action={signupUrl} method='post'>
-            <input type='hidden' name='intent' value='signup' />
-            <button className='button'>
+      if (sso_redirect) {
+        content = (
+            <a href={sso_redirect} data-method='post' className='button button--block button-tertiary'><FormattedMessage id='sign_in_banner.sso_redirect' defaultMessage='Login or Register' /></a>
+        )
+      } else {
+        let signupButton;
+
+        if (registrationsOpen) {
+          signupButton = (
+            <a href={signupUrl} className='button'>
+              <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
+            </a>
+          );
+        } else {
+          signupButton = (
+            <button className='button' onClick={openClosedRegistrationsModal}>
               <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
             </button>
-          </form>
+          );
+        }
 
-        );
-      } else {
-        signupButton = (
-          <button className='button' onClick={openClosedRegistrationsModal}>
-            <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
-          </button>
+        content = (
+          <>
+            {signupButton}
+            <a href='/auth/sign_in' className='button button-tertiary'><FormattedMessage id='sign_in_banner.sign_in' defaultMessage='Login' /></a>
+          </>
         );
       }
-
-      content = (
-        <>
-          {signupButton}
-          <a href='/auth/auth/openid_connect' className='button button-tertiary' data-method='post' rel='nofollow'><FormattedMessage id='sign_in_banner.sign_in' defaultMessage='Sign in' /></a>
-        </>
-      );
     }
 
     return (
