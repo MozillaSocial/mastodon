@@ -1,8 +1,9 @@
 - content_for :page_title do
   = t('auth.login')
 
-- content_for :header_tags do
-  = render partial: 'shared/og'
+- unless sso_redirect
+  - content_for :header_tags do
+    = render partial: 'shared/og'
 
 - unless omniauth_only?
   = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
@@ -21,10 +22,32 @@
 
 - if devise_mapping.omniauthable? && resource_class.omniauth_providers.any?
   .simple_form.alternative-login
-    %h4= omniauth_only? ? t('auth.log_in_with') : t('auth.or_log_in_with')
+    - if sso_redirect
+      %h4= 'Redirecting...'
+    -else
+      %h4= omniauth_only? ? t('auth.log_in_with') : t('auth.or_log_in_with')
 
-    .actions
-      - resource_class.omniauth_providers.each do |provider|
-        = provider_sign_in_link(provider)
+      .actions
+        - resource_class.omniauth_providers.each do |provider|
+          = provider_sign_in_link(provider)
 
-.form-footer= render 'auth/shared/links'
+- if sso_redirect
+  :javascript
+    (function() {
+      let form = document.createElement('form');
+      form.action = '#{ sso_redirect }';
+      form.method = 'post';
+      if (localStorage.getItem("mozsoc.auth_intent") == 'signup') {
+        let input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'intent';
+        input.value = 'signup';
+        form.append(input);
+      }
+      localStorage.removeItem('mozsoc.auth_intent');
+      document.body.append(form);
+      form.submit();
+    })();
+
+- unless sso_redirect
+  .form-footer= render 'auth/shared/links'

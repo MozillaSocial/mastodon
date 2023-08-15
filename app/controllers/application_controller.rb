@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
   helper_method :whitelist_mode?
   helper_method :body_class_string
   helper_method :skip_csrf_meta_tags?
+  helper_method :sso_redirect
 
   rescue_from ActionController::ParameterMissing, Paperclip::AdapterRegistry::NoHandlerError, with: :bad_request
   rescue_from Mastodon::NotPermittedError, with: :forbidden
@@ -133,6 +134,10 @@ class ApplicationController < ActionController::Base
 
   def omniauth_only?
     ENV['OMNIAUTH_ONLY'] == 'true'
+  end
+
+  def sso_redirect
+    "/auth/auth/#{Devise.omniauth_providers[0]}" if ENV['OMNIAUTH_ONLY'] == 'true' && Devise.omniauth_providers.length == 1
   end
 
   def sso_account_settings
