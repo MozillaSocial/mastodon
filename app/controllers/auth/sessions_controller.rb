@@ -16,6 +16,7 @@ class Auth::SessionsController < Devise::SessionsController
 
   content_security_policy only: :new do |p|
     p.form_action(false)
+    p.script_src  :self, :unsafe_inline, "'wasm-unsafe-eval'"
   end
 
   def check_suspicious!
