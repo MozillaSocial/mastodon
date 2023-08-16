@@ -1,8 +1,11 @@
 - content_for :page_title do
   = t('auth.login')
 
-- unless sso_redirect
-  - content_for :header_tags do
+- content_for :header_tags do
+  - if sso_redirect
+    = render_initial_state
+    = javascript_pack_tag 'auto_redirect_sign-in', crossorigin: 'anonymous'
+  - else
     = render partial: 'shared/og'
 
 - unless omniauth_only?
@@ -30,24 +33,6 @@
       .actions
         - resource_class.omniauth_providers.each do |provider|
           = provider_sign_in_link(provider)
-
-- if sso_redirect
-  :javascript
-    (function() {
-      let form = document.createElement('form');
-      form.action = '#{ sso_redirect }';
-      form.method = 'post';
-      if (localStorage.getItem("mozsoc.auth_intent") == 'signup') {
-        let input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'intent';
-        input.value = 'signup';
-        form.append(input);
-      }
-      localStorage.removeItem('mozsoc.auth_intent');
-      document.body.append(form);
-      form.submit();
-    })();
 
 - unless sso_redirect
   .form-footer= render 'auth/shared/links'
