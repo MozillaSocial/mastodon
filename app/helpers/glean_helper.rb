@@ -90,7 +90,7 @@ end
     # # add glean server side log for controller calls
     # around_action :emit_server_side_events
 
-...
+# ...
 
 # private
 # def emit_server_side_events

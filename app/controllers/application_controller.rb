@@ -181,9 +181,9 @@ class ApplicationController < ActionController::Base
     yield
   ensure
     GleanHelper::ApiEventsServerEvent.new(
-      application_id="moso-mastodon",
-      app_display_version="0.0.1",
-      app_channel="development",
+      application_id='mastodon',
+      app_display_version=Mastodon::Version.to_a,
+      app_channel=ENV.fetch('RAILS_ENV', 'development'),
       user_agent=request.user_agent,
       ip_address=request.ip,
       action_user_id=current_user&.id,
