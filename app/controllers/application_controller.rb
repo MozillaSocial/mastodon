@@ -177,7 +177,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
-  def emit_server_side_event
+  def emit_server_side_events
     yield
   ensure
     GleanHelper::ApiEventsServerEvent.new(
