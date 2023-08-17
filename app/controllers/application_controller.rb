@@ -182,7 +182,7 @@ class ApplicationController < ActionController::Base
   ensure
     GleanHelper::MastodonActionServerEvent.new(
       application_id:'mastodon',
-      app_display_version:Mastodon::Version.to_a,
+      app_display_version:Mastodon::Version.to_s,
       app_channel:ENV.fetch('RAILS_ENV', 'development'),
       user_agent:request.user_agent,
       ip_address:request.ip,
