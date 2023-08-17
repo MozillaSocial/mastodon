@@ -53,12 +53,12 @@ module GleanHelper
         },
         'metrics' => {
           'string' => {
-            'action.account_id' => @action_account_id,
-            'action.controller' => @action_controller,
-            'action.method' => @action_method,
-            'action.path' => @action_path,
-            'action.status_code' => @action_status_code,
-            'action.user_id' => @action_user_id,
+            'action.account_id' => @action_account_id.to_s,
+            'action.controller' => @action_controller.to_s,
+            'action.method' => @action_method.to_s,
+            'action.path' => @action_path.to_s,
+            'action.status_code' => @action_status_code.to_s,
+            'action.user_id' => @action_user_id.to_s,
           },
         },
       }
@@ -102,12 +102,12 @@ end
     # app_channel:'environment for exampe, `production` or `development`',
     # user_agent:'string or expression',
     # ip_address:'string or expression',
-    # action_account_id:'string or expression'.
-    # action_controller:'string or expression'.
-    # action_method:'string or expression'.
-    # action_path:'string or expression'.
-    # action_status_code:'string or expression'.
-    # action_user_id:'string or expression'.
+    # action_account_id:'string or expression',
+    # action_controller:'string or expression',
+    # action_method:'string or expression',
+    # action_path:'string or expression',
+    # action_status_code:'string or expression',
+    # action_user_id:'string or expression',
   # ).record
 # end
 # end
