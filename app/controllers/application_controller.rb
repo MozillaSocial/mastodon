@@ -180,7 +180,7 @@ class ApplicationController < ActionController::Base
   def emit_server_side_events
     yield
   ensure
-    GleanHelper::ApiEventsServerEvent.new(
+    GleanHelper::MastodonActionServerEvent.new(
       application_id='mastodon',
       app_display_version=Mastodon::Version.to_a,
       app_channel=ENV.fetch('RAILS_ENV', 'development'),
