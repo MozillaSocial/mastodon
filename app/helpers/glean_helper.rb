@@ -17,7 +17,7 @@ GLEAN_EVENT_MOZLOG_TYPE = 'glean-server-event'
 module GleanHelper
   class MastodonActionServerEvent
     # see comments for init parameter descriptions
-    def initialize(application_id, app_display_version, app_channel, logger_name, user_agent, ip_address, action_account_id, action_controller, action_method, action_path, action_status_code, action_user_id)
+    def initialize(application_id, app_display_version, app_channel, user_agent, ip_address, action_account_id, action_controller, action_method, action_path, action_status_code, action_user_id)
       @application_id = application_id # string - Application Id to identify application per Glean standards
       @app_display_version = app_display_version # string - Application Id to identify application per Glean standards
       @app_channel = app_channel # string - Application Id to identify application per Glean standards
