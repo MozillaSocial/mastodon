@@ -2,7 +2,7 @@
 
 class ApplicationController < ActionController::Base
   # add glean server side log for controller calls
-  around_action :emit_glean_log
+  around_action :emit_server_side_events
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -177,22 +177,21 @@ class ApplicationController < ActionController::Base
   end
 
   private
-  def emit_glean_log
+  def emit_server_side_event
     yield
   ensure
     GleanHelper::ApiEventsServerEvent.new(
       application_id="moso-mastodon",
-           app_display_version="0.0.1",
-           app_channel="development",
-           logger_name="moso-mastodon-server-glean",
-           user_agent=request.user_agent,
-           ip_address=request.ip,
-           user_id=current_user&.id,
-           account_id=current_user&.account&.id,
-           path=request.fullpath,
-           controller=controller_name,
-           method=request.method,
-           status_code=response.status
+      app_display_version="0.0.1",
+      app_channel="development",
+      user_agent=request.user_agent,
+      ip_address=request.ip,
+      action_user_id=current_user&.id,
+      action_account_id=current_user&.account&.id,
+      action_path=request.fullpath,
+      action_controller=controller_name,
+      action_method=request.method,
+      action_status_code=response.status
     ).record
   end
 end
