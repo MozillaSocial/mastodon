@@ -78,7 +78,7 @@ module GleanHelper
       logger_name = 'mastodon-action-glean'
       logger.formatter = proc do |severity, datetime, _progname, msg|
         date_format = datetime.to_i
-        '#{JSON.dump(Timestamp: date_format.to_s, Logger: logger_name.to_s, Type: GLEAN_EVENT_MOZLOG_TYPE.to_s, Severity: severity.ljust(5).to_s, Pid: Process.pid.to_s, Fields: msg)}\n'
+        "#{JSON.dump(Timestamp: date_format.to_s, Logger: logger_name.to_s, Type: GLEAN_EVENT_MOZLOG_TYPE.to_s, Severity: severity.ljust(5).to_s, Pid: Process.pid.to_s, Fields: msg)}\n"
       end
       logger.info(ping)
     end
