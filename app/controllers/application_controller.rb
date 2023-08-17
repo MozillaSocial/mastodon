@@ -181,17 +181,17 @@ class ApplicationController < ActionController::Base
     yield
   ensure
     GleanHelper::MastodonActionServerEvent.new(
-      application_id='mastodon',
-      app_display_version=Mastodon::Version.to_a,
-      app_channel=ENV.fetch('RAILS_ENV', 'development'),
-      user_agent=request.user_agent,
-      ip_address=request.ip,
-      action_user_id=current_user&.id,
-      action_account_id=current_user&.account&.id,
-      action_path=request.fullpath,
-      action_controller=controller_name,
-      action_method=request.method,
-      action_status_code=response.status
+      application_id:'mastodon',
+      app_display_version:Mastodon::Version.to_a,
+      app_channel:ENV.fetch('RAILS_ENV', 'development'),
+      user_agent:request.user_agent,
+      ip_address:request.ip,
+      action_user_id:current_user&.id,
+      action_account_id:current_user&.account&.id,
+      action_path:request.fullpath,
+      action_controller:controller_name,
+      action_method:request.method,
+      action_status_code:response.status
     ).record
   end
 end

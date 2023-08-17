@@ -1,8 +1,6 @@
 # Any copyright is dedicated to the Public Domain.
 # https://creativecommons.org/publicdomain/zero/1.0/
 
-
-# "mastodon.controller\":\"test\",\"mastodon.method\":\"test\",\"mastodon.status_code\":\"test\"}
 ---
 $schema: moz://mozilla.org/schemas/glean/metrics/2-0-0
 
@@ -46,4 +44,5 @@ action:
     description: |
       API status code returned in response.
     <<: *defaults
+
 

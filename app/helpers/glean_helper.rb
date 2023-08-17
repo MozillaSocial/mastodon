@@ -97,17 +97,17 @@ end
   # yield
 # ensure
   # GleanHelper::MastodonActionServerEvent.new(
-    # application_id='ruby app name',
-    # app_display_version='ruby app name as `X.X.X`',
-    # app_channel='environment for exampe, `production` or `development`',
-    # user_agent='string or expression',
-    # ip_address='string or expression',
-    # action_account_id='string or expression'.
-    # action_controller='string or expression'.
-    # action_method='string or expression'.
-    # action_path='string or expression'.
-    # action_status_code='string or expression'.
-    # action_user_id='string or expression'.
+    # application_id:'ruby app name',
+    # app_display_version:'ruby app name as `X.X.X`',
+    # app_channel:'environment for exampe, `production` or `development`',
+    # user_agent:'string or expression',
+    # ip_address:'string or expression',
+    # action_account_id:'string or expression'.
+    # action_controller:'string or expression'.
+    # action_method:'string or expression'.
+    # action_path:'string or expression'.
+    # action_status_code:'string or expression'.
+    # action_user_id:'string or expression'.
   # ).record
 # end
 # end
