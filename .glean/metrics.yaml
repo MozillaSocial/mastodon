@@ -18,7 +18,7 @@ action:
       - https://bugzilla.mozilla.org/show_bug.cgi?id=TBD
     expires: never
     data_sensitivity:
-      - web_activity
+      - interaction
     description: |
       Mastodon user id as int associated with the action.
       These are users local to the Mozilla Social instance.
