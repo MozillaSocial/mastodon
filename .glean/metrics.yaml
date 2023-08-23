@@ -13,9 +13,7 @@ action:
     notification_emails:
       - breyes@mozilla.com
     bugs:
-      - https://mozilla-hub.atlassian.net/browse/FXA-TBD
-    data_reviews:
-      - https://bugzilla.mozilla.org/show_bug.cgi?id=TBD
+      - https://mozilla-hub.atlassian.net/browse/SOCIALPLAT-443
     expires: never
     data_sensitivity:
       - interaction
