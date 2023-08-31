@@ -6,7 +6,7 @@ Warden::Manager.after_set_user except: :fetch do |user, warden|
 
   warden.cookies.signed['_session_id'] = {
     value: session_id,
-    expires: 1.year.from_now,
+    expires: 5.minutes.from_now,
     httponly: true,
     same_site: :lax,
   }
@@ -20,7 +20,7 @@ Warden::Manager.after_fetch do |user, warden|
 
     warden.cookies.signed['_session_id'] = {
       value: session_id,
-      expires: 1.year.from_now,
+      expires: 5.minutes.from_now,
       httponly: true,
       same_site: :lax,
     }
