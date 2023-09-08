@@ -215,7 +215,8 @@ class TermsOfService extends React.PureComponent {
 
             <p>Mozilla Corporation<br />
               Attn: Mozilla &#8211; Legal Notices<br />
-              2 Harrison St. #175,<br />
+              149 New Montgomery Street<br />
+              4th Floor<br />
               San Francisco, CA 94105<br />
               <a href='mailto:legal-notices@mozilla.com'>legal-notices@mozilla.com</a>
             </p>
