@@ -221,6 +221,8 @@ namespace :api, format: false do
         member do
           post :unsensitive
         end
+
+        resource :action, only: [:create], controller: 'status_actions'
       end
 
       resources :reports, only: [:index, :update, :show] do
