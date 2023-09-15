@@ -155,6 +155,7 @@ en:
       admin:read:email_domain_blocks: read sensitive information of all email domain blocks
       admin:read:ip_blocks: read sensitive information of all IP blocks
       admin:read:reports: read sensitive information of all reports and reported accounts
+      admin:read:statuses: read sensitive information of all reported statuses
       admin:write: modify all data on the server
       admin:write:accounts: perform moderation actions on accounts
       admin:write:canonical_email_blocks: perform moderation actions on canonical email blocks
@@ -163,6 +164,7 @@ en:
       admin:write:email_domain_blocks: perform moderation actions on email domain blocks
       admin:write:ip_blocks: perform moderation actions on IP blocks
       admin:write:reports: perform moderation actions on reports
+      admin:write:statuses: perform moderation actions on statuses
       crypto: use end-to-end encryption
       follow: modify account relationships
       push: receive your push notifications
