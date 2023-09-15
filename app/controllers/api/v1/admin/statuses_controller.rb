@@ -23,7 +23,7 @@ class Api::V1::Admin::StatusesController < Api::BaseController
     ApplicationRecord.transaction do
       @status.discard_with_reblogs
       log_action :destroy, @status
-      Tombstone.find_or_create_by(uri: @status.uri, account: @status.account)
+      Tombstone.find_or_create_by(uri: @status.uri, account: @status.account, by_moderator: true)
     end
     json = render_to_body json: @status, serializer: REST::StatusSerializer, source_requested: true
 
