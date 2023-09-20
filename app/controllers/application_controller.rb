@@ -180,18 +180,24 @@ class ApplicationController < ActionController::Base
   def emit_server_side_events
     yield
   ensure
-    GleanHelper::MastodonActionServerEvent.new(
-      application_id:'mastodon',
-      app_display_version:Mastodon::Version.to_s,
-      app_channel:ENV.fetch('RAILS_ENV', 'development'),
-      user_agent:request.user_agent,
-      ip_address:request.ip,
+
+    Event = Struct.new(:user_id, :account_id, :path, :controller, :method, :status_code)
+    new_event = Event.new(
       action_user_id:current_user&.id,
       action_account_id:current_user&.account&.id,
       action_path:request.fullpath,
       action_controller:controller_name,
       action_method:request.method,
       action_status_code:response.status
+    )
+
+    GleanHelper::MastodonBackendServerEvent.new(
+      application_id:'mastodon',
+      app_display_version:Mastodon::Version.to_s,
+      app_channel:ENV.fetch('RAILS_ENV', 'development'),
+      user_agent:request.user_agent,
+      ip_address:request.ip,
+      event_extra: new_event
     ).record
   end
 end

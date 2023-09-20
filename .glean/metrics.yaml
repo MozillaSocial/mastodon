@@ -4,43 +4,17 @@
 ---
 $schema: moz://mozilla.org/schemas/glean/metrics/2-0-0
 
-action:
-  user_id: &defaults
-    type: string
-    lifetime: ping
-    send_in_pings:
-      - mastodon-action
+mastodon:
+  backend:
+    type: event
+    description: |
+      An event which is sent for every backend action in Mastodon.
     notification_emails:
-      - breyes@mozilla.com
+        - breyes@mozilla.com
     bugs:
-      - https://mozilla-hub.atlassian.net/browse/SOCIALPLAT-443
+      - https://mozilla-hub.atlassian.net/browse/FXA-TBD
+    data_reviews:
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=TBD
     expires: never
     data_sensitivity:
-      - interaction
-    description: |
-      Mastodon user id as int associated with the action.
-      These are users local to the Mozilla Social instance.
-    <<: *defaults
-  account_id:
-    description: |
-      Mastodon account id as int associated with the action.
-      This can be from another instance.
-    <<: *defaults
-  path:
-    description: |
-      API path requested by the call.
-    <<: *defaults
-  controller:
-    description: |
-      Mastodon application controller class managing the request.
-    <<: *defaults
-  method:
-    description: |
-      API method used for request.
-    <<: *defaults
-  status_code:
-    description: |
-      API status code returned in response.
-    <<: *defaults
-
-
+      - web_activity
