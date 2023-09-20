@@ -12,6 +12,7 @@ require 'securerandom'
 require 'logger'
 require 'rbconfig'
 
+
 # this will be used for identifying logs that need to forward to Moz Data Pipeline
 GLEAN_EVENT_MOZLOG_TYPE = 'glean-server-event'
 
@@ -58,12 +59,12 @@ module GleanHelper
     end
 
     def record
-      t = Time.zone.now
+      t = Time.now
       t_utc = t.utc
 
       # event extra is expected to be a struct to enforce some level of schema.
 
-      raise 'event_extra must be a Struct!' unless event_extra.is_a?(Struct)
+      raise 'event_extra must be a Struct!' unless @event_extra.is_a?(Struct)
 
       event_payload = {
         # `Unknown` fields below are required in the Glean schema, however they are not useful in server context.
@@ -84,7 +85,7 @@ module GleanHelper
         },
         'event' => 'mastodon.backend',
         'event_timestamp' => t_utc,
-        'event_extra' => event_extra.to_h.to_json,
+        'event_extra' => @event_extra.to_h.to_json,
       }
       serialized_event_payload = event_payload.to_json
       # This is the message structure that Decoder expects: https://github.com/mozilla/gcp-ingestion/pull/2400.
@@ -111,26 +112,30 @@ end
 
 # use the following examples for adding the loggers to your controller
 # class ApplicationController < ActionController::Base
-# add glean server side log for controller calls
-# around_action :emit_server_side_events
+    # add glean server side log for controller calls
+    # around_action :emit_server_side_events
 
 # ...
 
-# logic to create event extra json Struct
+# CategoryTypeStruct = Struct.new(:attribute_1, :attribute_2)
 
-# ...
+#...
 
 # private
 # def emit_server_side_events
-# yield
+  # yield
 # ensure
-# GleanHelper::CategoryTypeServerEvent.new(
-# application_id:'ruby app name',
-# app_display_version:'ruby app name as `X.X.X`',
-# app_channel:'environment for exampe, `production` or `development`',
-# user_agent:'string or expression',
-# ip_address:'string or expression',
-# event_extra: 'Struct object'
-# ).record
+  # new_event = CategoryTypeEvent.new(
+  #   :attribute_1:'test',
+  #   :attribute_2:'test'
+  # )
+  # GleanHelper::CategoryTypeServerEvent.new(
+    # application_id:'ruby app name',
+    # app_display_version:'ruby app name as `X.X.X`',
+    # app_channel:'environment for exampe, `production` or `development`',
+    # user_agent:'string or expression',
+    # ip_address:'string or expression',
+    # event_extra:new_event
+  # ).record
 # end
 # end

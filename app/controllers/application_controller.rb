@@ -176,13 +176,13 @@ class ApplicationController < ActionController::Base
     response.cache_control.replace(private: true, no_store: true)
   end
 
+  MastodonBackendStruct = Struct.new(:user_id, :account_id, :path, :controller, :method, :status_code)
+
   private
   def emit_server_side_events
     yield
   ensure
-
-    Event = Struct.new(:user_id, :account_id, :path, :controller, :method, :status_code)
-    new_event = Event.new(
+    new_event = MastodonBackendStruct.new(
       action_user_id:current_user&.id,
       action_account_id:current_user&.account&.id,
       action_path:request.fullpath,
