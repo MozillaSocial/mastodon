@@ -183,12 +183,12 @@ class ApplicationController < ActionController::Base
     yield
   ensure
     new_event = MastodonBackendStruct.new(
-      action_user_id:current_user&.id,
-      action_account_id:current_user&.account&.id,
-      action_path:request.fullpath,
-      action_controller:controller_name,
-      action_method:request.method,
-      action_status_code:response.status
+      user_id:current_user&.id,
+      account_id:current_user&.account&.id,
+      path:request.fullpath,
+      controller:controller_name,
+      method:request.method,
+      status_code:response.status
     )
 
     GleanHelper::MastodonBackendServerEvent.new(
