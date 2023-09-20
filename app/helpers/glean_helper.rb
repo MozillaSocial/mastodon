@@ -125,9 +125,9 @@ end
 # def emit_server_side_events
   # yield
 # ensure
-  # new_event = CategoryTypeEvent.new(
-  #   :attribute_1:'test',
-  #   :attribute_2:'test'
+  # new_event = CategoryTypeStruct.new(
+  #   attribute_1:'test',
+  #   attribute_2:'test'
   # )
   # GleanHelper::CategoryTypeServerEvent.new(
     # application_id:'ruby app name',
