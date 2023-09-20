@@ -12,7 +12,6 @@ require 'securerandom'
 require 'logger'
 require 'rbconfig'
 
-
 # this will be used for identifying logs that need to forward to Moz Data Pipeline
 GLEAN_EVENT_MOZLOG_TYPE = 'glean-server-event'
 
@@ -35,15 +34,6 @@ module OS
       RbConfig::CONFIG['host_os']
     end
   end
-
-  def self.version
-    version = RbConfig::CONFIG['build_os'].match('\d{1,2}\.*\d{0,2}\.*\d{0,3}').to_s
-    if version.nil?
-      'Unknown'
-    else
-      version.to_s
-    end
-  end
 end
 
 module GleanHelper
@@ -59,7 +49,7 @@ module GleanHelper
     end
 
     def record
-      t = Time.now
+      t = Time.zone.now
       t_utc = t.utc
 
       # event extra is expected to be a struct to enforce some level of schema.
@@ -72,7 +62,7 @@ module GleanHelper
           'telemetry_sdk_build' => 'glean_parser v0.1.dev1004+g4822435',
           'first_run_date' => 'Unknown',
           'os' => OS.name,
-          'os_version' => OS.version,
+          'os_version' => 'Unknown',
           'architecture' => 'Unknown',
           'app_build' => 'Unknown',
           'app_display_version' => @app_display_version,
@@ -112,30 +102,30 @@ end
 
 # use the following examples for adding the loggers to your controller
 # class ApplicationController < ActionController::Base
-    # add glean server side log for controller calls
-    # around_action :emit_server_side_events
+# add glean server side log for controller calls
+# around_action :emit_server_side_events
 
 # ...
 
 # CategoryTypeStruct = Struct.new(:attribute_1, :attribute_2)
 
-#...
+# ...
 
 # private
 # def emit_server_side_events
-  # yield
+# yield
 # ensure
-  # new_event = CategoryTypeStruct.new(
-  #   attribute_1:'test',
-  #   attribute_2:'test'
-  # )
-  # GleanHelper::CategoryTypeServerEvent.new(
-    # application_id:'ruby app name',
-    # app_display_version:'ruby app name as `X.X.X`',
-    # app_channel:'environment for exampe, `production` or `development`',
-    # user_agent:'string or expression',
-    # ip_address:'string or expression',
-    # event_extra:new_event
-  # ).record
+# new_event = CategoryTypeStruct.new(
+#   attribute_1:'test',
+#   attribute_2:'test'
+# )
+# GleanHelper::CategoryTypeServerEvent.new(
+# application_id:'ruby app name',
+# app_display_version:'ruby app name as `X.X.X`',
+# app_channel:'environment for exampe, `production` or `development`',
+# user_agent:'string or expression',
+# ip_address:'string or expression',
+# event_extra:new_event
+# ).record
 # end
 # end
