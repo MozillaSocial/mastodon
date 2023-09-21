@@ -17,9 +17,18 @@ const SignInBanner = () => {
 
   let signupButton;
 
-      const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || '/auth/sign_up');
+  const signupUrl = useAppSelector((state) => state.getIn(['server', 'server', 'registrations', 'url'], null) || '/auth/sign_up');
 
-      if (sso_redirect) {
+  if (sso_redirect) {
+    return (
+      <div className='sign-in-banner'>
+        <p><FormattedMessage id='sign_in_banner.text' defaultMessage='Login to follow profiles or hashtags, favorite, share and reply to posts. You can also interact from your account on a different server.' /></p>
+        <a href={sso_redirect} data-method='post' className='button button--block button-tertiary'><FormattedMessage id='sign_in_banner.sso_redirect' defaultMessage='Login or Register' /></a>
+      </div>
+    )
+  }
+
+  if (sso_redirect) {
     return (
       <div className='sign-in-banner'>
         <p><FormattedMessage id='sign_in_banner.text' defaultMessage='Login to follow profiles or hashtags, favorite, share and reply to posts. You can also interact from your account on a different server.' /></p>
@@ -47,7 +56,7 @@ const SignInBanner = () => {
 
   return (
     <div className='sign-in-banner'>
-      <p><FormattedMessage id='sign_in_banner.text' defaultMessage='Sign in to follow profiles or hashtags, favourite, share and reply to posts. You can also interact from your account on a different server.' /></p>
+      <p><FormattedMessage id='sign_in_banner.text' defaultMessage='Login to follow profiles or hashtags, favorite, share and reply to posts. You can also interact from your account on a different server.' /></p>
       {signupButton}
       <a href='/auth/auth/openid_connect' rel='nofollow' className='button button--block button-tertiary' data-method='post'><FormattedMessage id='sign_in_banner.sign_in' defaultMessage='Sign in' /></a>
     </div>
