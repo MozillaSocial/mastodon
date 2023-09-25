@@ -40,4 +40,8 @@ class ActivityPub::Activity::Flag < ActivityPub::Activity
   def report_comment
     (@json['content'] || '')[0...5000]
   end
+
+  def report_comment
+    (@json['content'] || '')[0...5000]
+  end
 end
