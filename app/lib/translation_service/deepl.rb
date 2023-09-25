@@ -71,13 +71,9 @@ class TranslationService::DeepL < TranslationService
     data = Oj.load(json, mode: :strict)
     raise UnexpectedResponseError unless data.is_a?(Hash)
 
-    data['translations'].map do |translation|
-      Translation.new(
-        text: translation['text'],
-        detected_source_language: translation['detected_source_language']&.downcase,
-        provider: 'DeepL.com'
-      )
-    end
+    raise UnexpectedResponseError unless json.is_a?(Hash)
+
+    Translation.new(text: Sanitize.fragment(json.dig('translations', 0, 'text'), Sanitize::Config::MASTODON_STRICT), detected_source_language: json.dig('translations', 0, 'detected_source_language')&.downcase, provider: 'DeepL.com')
   rescue Oj::ParseError
     raise UnexpectedResponseError
   end

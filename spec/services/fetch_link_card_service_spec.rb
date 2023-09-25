@@ -89,7 +89,7 @@ RSpec.describe FetchLinkCardService, type: :service do
       end
     end
 
-    context 'with a url that has a caret' do
+    context do
       let(:status) { Fabricate(:status, text: 'test http://example.com/test?data=file.gpx^1') }
 
       it 'does fetch URLs with a caret in search params' do

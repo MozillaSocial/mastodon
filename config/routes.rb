@@ -165,7 +165,141 @@ Rails.application.routes.draw do
   resource :authorize_interaction, only: [:show, :create]
   resource :share, only: [:show]
 
-  draw(:admin)
+    resources :instances, only: [:index, :show, :destroy], constraints: { id: /[^\/]+/ }, format: 'html' do
+      member do
+        post :clear_delivery_errors
+        post :restart_delivery
+        post :stop_delivery
+      end
+    end
+
+    resources :rules
+
+    resources :webhooks do
+      member do
+        post :enable
+        post :disable
+      end
+
+      resource :secret, only: [], controller: 'webhooks/secrets' do
+        post :rotate
+      end
+    end
+
+    resources :reports, only: [:index, :show] do
+      resources :actions, only: [:create], controller: 'reports/actions' do
+        collection do
+          post :preview
+        end
+      end
+
+      member do
+        post :assign_to_self
+        post :unassign
+        post :reopen
+        post :resolve
+      end
+    end
+
+    resources :report_notes, only: [:create, :destroy]
+
+    resources :accounts, only: [:index, :show, :destroy] do
+      member do
+        post :enable
+        post :unsensitive
+        post :unsilence
+        post :unsuspend
+        post :redownload
+        post :remove_avatar
+        post :remove_header
+        post :memorialize
+        post :approve
+        post :reject
+        post :unblock_email
+      end
+
+      collection do
+        post :batch
+      end
+
+      resource :change_email, only: [:show, :update]
+      resource :reset, only: [:create]
+      resource :action, only: [:new, :create], controller: 'account_actions'
+
+      resources :statuses, only: [:index, :show] do
+        collection do
+          post :batch
+        end
+      end
+
+      resources :relationships, only: [:index]
+
+      resource :confirmation, only: [:create] do
+        collection do
+          post :resend
+        end
+      end
+    end
+
+    resources :users, only: [] do
+      resource :two_factor_authentication, only: [:destroy], controller: 'users/two_factor_authentications'
+      resource :role, only: [:show, :update], controller: 'users/roles'
+    end
+
+    resources :custom_emojis, only: [:index, :new, :create] do
+      collection do
+        post :batch
+      end
+    end
+
+    resources :ip_blocks, only: [:index, :new, :create] do
+      collection do
+        post :batch
+      end
+    end
+
+    resources :roles, except: [:show]
+    resources :account_moderation_notes, only: [:create, :destroy]
+    resource :follow_recommendations, only: [:show, :update]
+    resources :tags, only: [:show, :update]
+
+    namespace :trends do
+      resources :links, only: [:index] do
+        collection do
+          post :batch
+        end
+      end
+
+      resources :tags, only: [:index] do
+        collection do
+          post :batch
+        end
+      end
+
+      resources :statuses, only: [:index] do
+        collection do
+          post :batch
+        end
+      end
+
+      namespace :links do
+        resources :preview_card_providers, only: [:index], path: :publishers do
+          collection do
+            post :batch
+          end
+        end
+      end
+    end
+
+    namespace :disputes do
+      resources :appeals, only: [:index] do
+        member do
+          post :approve
+          post :reject
+        end
+      end
+    end
+  end
 
   get '/admin', to: redirect('/admin/dashboard', status: 302)
 

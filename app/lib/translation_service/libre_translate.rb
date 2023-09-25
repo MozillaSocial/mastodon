@@ -48,13 +48,9 @@ class TranslationService::LibreTranslate < TranslationService
     data = Oj.load(json, mode: :strict)
     raise UnexpectedResponseError unless data.is_a?(Hash)
 
-    data['translatedText'].map.with_index do |text, index|
-      Translation.new(
-        text: text,
-        detected_source_language: data.dig('detectedLanguage', index, 'language') || source_language,
-        provider: 'LibreTranslate'
-      )
-    end
+    raise UnexpectedResponseError unless json.is_a?(Hash)
+
+    Translation.new(text: Sanitize.fragment(json['translatedText'], Sanitize::Config::MASTODON_STRICT), detected_source_language: source_language, provider: 'LibreTranslate')
   rescue Oj::ParseError
     raise UnexpectedResponseError
   end

@@ -123,6 +123,8 @@ describe Report do
   describe 'validations' do
     let(:remote_account) { Fabricate(:account, domain: 'example.com', protocol: :activitypub, inbox_url: 'http://example.com/inbox') }
 
+    let(:remote_account) { Fabricate(:account, domain: 'example.com', protocol: :activitypub, inbox_url: 'http://example.com/inbox') }
+
     it 'is invalid if comment is longer than 1000 characters only if reporter is local' do
       report = Fabricate.build(:report, comment: Faker::Lorem.characters(number: 1001))
       expect(report.valid?).to be false

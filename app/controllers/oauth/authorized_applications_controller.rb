@@ -11,6 +11,8 @@ class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicatio
 
   before_action :set_last_used_at_by_app, only: :index, unless: -> { request.format == :json }
 
+  before_action :set_last_used_at_by_app, only: :index, unless: -> { request.format == :json }
+
   skip_before_action :require_functional!
 
   include Localized
@@ -32,10 +34,6 @@ class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicatio
 
   def require_not_suspended!
     forbidden if current_account.suspended?
-  end
-
-  def set_cache_headers
-    response.cache_control.replace(private: true, no_store: true)
   end
 
   def set_last_used_at_by_app
