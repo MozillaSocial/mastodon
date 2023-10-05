@@ -46,11 +46,11 @@ class TermsOfService extends React.PureComponent {
               represent that you are authorized to and intend to bind that
               entity.</p>
 
-            <h2 id='fxa-account'>You'll Need An Account</h2>
+            <h2 id='mozilla-account'>You'll Need A Mozilla Account</h2>
 
-            <p>You need an account to use Mozilla.social. To create an account, you will also need to agree to the <a href='https://www.mozilla.org/about/legal/terms/services/'>Mozilla
-                Terms of Service</a> and <a href='https://www.mozilla.org/privacy/firefox/'>Privacy Notice</a> for
-              your account.</p>
+            <p>You need a Mozilla account to use Mozilla.social. To create a Mozilla account, you will also need to agree
+              to the <a href='https://www.mozilla.org/about/legal/terms/services/'>Terms of Service</a>
+              and <a href='https://www.mozilla.org/privacy/firefox/'>Privacy Notice</a> for your Mozilla account.</p>
 
             <h2 id='your-privacy'>Your Privacy</h2>
 
@@ -114,8 +114,8 @@ class TermsOfService extends React.PureComponent {
               Mozilla.social account. However, we may retain such data to the
               extent necessary in order to enforce our policies or comply with
               the law, as described in the Mozilla.social Privacy Notice. This
-              will not delete your Mozilla account, which you may delete
-              separately on your Mozilla account <a href='https://accounts.firefox.com/'>settings page</a>.</p>
+              will not delete your account, which you may delete
+              separately on your account <a href='https://accounts.firefox.com/'>settings page</a>.</p>
 
             <h2 id='you-are-responsible'>You Are Responsible For the Content You Provide</h2>
 
@@ -174,7 +174,7 @@ class TermsOfService extends React.PureComponent {
               acceptance of such changes. We will post an effective date at the
               top of this page to make it clear when we made our most recent
               update. If the update is significant, we will contact you at the
-              primary email address for your account to let you know
+              primary email address for your Mozilla account to let you know
               about the changes.</p>
 
             <p>Termination. These Terms apply until they are modified, or
