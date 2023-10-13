@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
+# add instaniated Glean Logger
+include Glean
+GLEAN = Glean::GleanEventsLogger.new(
+  app_id: 'moso-mastodon',
+  app_display_version: Mastodon::Version.to_s,
+  app_channel: ENV.fetch('RAILS_ENV', 'development'),
+  logger_options: STDOUT
+)
+
 class ApplicationController < ActionController::Base
   # add glean server side logging for controller calls
-  include Glean
-  GLEAN = Glean::GleanEventsLogger.new(
-    app_id: 'moso-mastodon',
-    app_display_version: Mastodon::Version.to_s,
-    app_channel: ENV.fetch('RAILS_ENV', 'development'),
-    logger_options: STDOUT
-  )
   around_action :emit_glean
 
   # Prevent CSRF attacks by raising an exception.
