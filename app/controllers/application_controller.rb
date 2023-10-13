@@ -204,7 +204,7 @@ class ApplicationController < ActionController::Base
       object_type: 'api_request',
       object_state: event.to_json,
       identifiers_adjust_device_id: nil,
-      identifiers_fxa_account_id: nil
+      identifiers_fxa_account_id: nil,
       identifiers_mastodon_account_handle: current_user&.account&.username + '@' + domain,
       identifiers_mastodon_account_id: current_user&.account&.id,
       identifiers_user_agent: request.user_agent
