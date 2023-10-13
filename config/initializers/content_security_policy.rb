@@ -19,6 +19,9 @@ media_host ||= host_to_url(ENV['AZURE_ALIAS_HOST'])
 media_host ||= host_to_url(ENV['S3_HOSTNAME']) if ENV['S3_ENABLED'] == 'true'
 media_host ||= assets_host
 
+oidc_issuer = ENV['OIDC_ISSUER']
+oidc_issuer ||= host_to_url(base_host)
+
 def sso_host
   return unless ENV['ONE_CLICK_SSO_LOGIN'] == 'true'
   return unless ENV['OMNIAUTH_ONLY'] == 'true'
@@ -51,7 +54,7 @@ Rails.application.config.content_security_policy do |p|
   if sso_host.present?
     p.form_action     :self, sso_host
   else
-    p.form_action     :self
+    p.form_action     :self, oidc_issuer, 'https://accounts.firefox.com', 'https://accounts.stage.mozaws.net'
   end
 
   p.child_src       :self, :blob, assets_host
