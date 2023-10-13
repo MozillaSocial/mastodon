@@ -30,7 +30,7 @@ class TermsOfService extends React.PureComponent {
         <div className='scrollable privacy-policy'>
           <div className='column-title'>
             <h3>Terms of Service</h3>
-            <p>Version 0.2, effective October 4, 2023</p>
+            <p>Version 0.2, effective November 1, 2023</p>
           </div>
 
           <div className='privacy-policy__body prose'>
