@@ -195,7 +195,7 @@ class ApplicationController < ActionController::Base
       'status_code' => response.status
     }
     domain = current_user&.account&.domain
-    if not domain:
+    if domain.nil?
       domain = 'mozilla.social'
     end
     g.backend_object_update.record(
