@@ -13,7 +13,6 @@ class ApplicationController < ActionController::Base
   include SessionTrackingConcern
   include CacheConcern
   include DomainControlHelper
-  include Glean
 
   helper_method :current_account
   helper_method :current_session
@@ -175,13 +174,6 @@ class ApplicationController < ActionController::Base
   def set_cache_control_defaults
     response.cache_control.replace(private: true, no_store: true)
   end
-
-  g = Glean::GleanEventsLogger.new(
-    app_id: 'moso-mastodon',
-    app_display_version: Mastodon::Version.to_s,
-    app_channel: ENV.fetch('RAILS_ENV', 'development'),
-    logger_options: STDOUT
-  )
   
   private
   def emit_glean
@@ -198,7 +190,7 @@ class ApplicationController < ActionController::Base
     if domain.nil?
       domain = 'mozilla.social'
     end
-    g.backend_object_update.record(
+    glean.backend_object_update.record(
       user_agent: request.user_agent,
       ip_address: request.ip,
       object_type: 'api_request',
