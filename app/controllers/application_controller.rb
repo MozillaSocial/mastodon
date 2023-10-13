@@ -195,9 +195,15 @@ class ApplicationController < ActionController::Base
       'method' => request.method,
       'status_code' => response.status
     }
+    username = current_user&.account&.username
     domain = current_user&.account&.domain
-    if domain.nil?
-      domain = 'mozilla.social'
+    if username.nil?
+      handle = nil
+    else
+      if domain.nil?
+        domain = 'mozilla.social'
+      end
+      handle = username + '@' + domain 
     end
     GLEAN.backend_object_update.record(
       user_agent: request.user_agent,
@@ -206,7 +212,7 @@ class ApplicationController < ActionController::Base
       object_state: event.to_json,
       identifiers_adjust_device_id: nil,
       identifiers_fxa_account_id: nil,
-      identifiers_mastodon_account_handle: current_user&.account&.username + '@' + domain,
+      identifiers_mastodon_account_handle: handle,
       identifiers_mastodon_account_id: current_user&.account&.id,
       identifiers_user_agent: request.user_agent
     )
