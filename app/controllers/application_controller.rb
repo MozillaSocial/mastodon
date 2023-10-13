@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  # add glean server side log for controller calls
-  around_action :emit_server_side_events
+  # add glean server side logging for controller calls
+  around_action :emit_glean
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   include SessionTrackingConcern
   include CacheConcern
   include DomainControlHelper
-  include GleanHelper
+  include Glean
 
   helper_method :current_account
   helper_method :current_session
@@ -176,28 +176,38 @@ class ApplicationController < ActionController::Base
     response.cache_control.replace(private: true, no_store: true)
   end
 
-  MastodonBackendStruct = Struct.new(:user_id, :account_id, :path, :controller, :method, :status_code)
-
+  g = Glean::GleanEventsLogger.new(
+    app_id: 'moso-mastodon',
+    app_display_version: Mastodon::Version.to_s,
+    app_channel: ENV.fetch('RAILS_ENV', 'development'),
+    logger_options: STDOUT
+  )
+  
   private
-  def emit_server_side_events
+  def emit_glean
     yield
   ensure
-    new_event = MastodonBackendStruct.new(
-      user_id:current_user&.id,
-      account_id:current_user&.account&.id,
-      path:request.fullpath,
-      controller:controller_name,
-      method:request.method,
-      status_code:response.status
+    event = {
+      'user_id' => current_user&.id,
+      'path' => request.fullpath,
+      'controller' => controller_name,
+      'method' => request.method,
+      'status_code' => response.status
+    }
+    domain = current_user&.account&.domain
+    if not domain:
+      domain = 'mozilla.social'
+    end
+    g.backend_object_update.record(
+      user_agent: request.user_agent,
+      ip_address: request.ip,
+      object_type: 'api_request',
+      object_state: event.to_json,
+      identifiers_adjust_device_id: nil,
+      identifiers_fxa_account_id: nil
+      identifiers_mastodon_account_handle: current_user&.account&.username + '@' + domain,
+      identifiers_mastodon_account_id: current_user&.account&.id,
+      identifiers_user_agent: request.user_agent
     )
-
-    GleanHelper::MastodonBackendServerEvent.new(
-      application_id:'mastodon',
-      app_display_version:Mastodon::Version.to_s,
-      app_channel:ENV.fetch('RAILS_ENV', 'development'),
-      user_agent:request.user_agent,
-      ip_address:request.ip,
-      event_extra: new_event
-    ).record
   end
 end
