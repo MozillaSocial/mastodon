@@ -2,6 +2,13 @@
 
 class ApplicationController < ActionController::Base
   # add glean server side logging for controller calls
+  include Glean
+  GLEAN = Glean::GleanEventsLogger.new(
+    app_id: 'moso-mastodon',
+    app_display_version: Mastodon::Version.to_s,
+    app_channel: ENV.fetch('RAILS_ENV', 'development'),
+    logger_options: STDOUT
+  )
   around_action :emit_glean
 
   # Prevent CSRF attacks by raising an exception.
@@ -190,7 +197,7 @@ class ApplicationController < ActionController::Base
     if domain.nil?
       domain = 'mozilla.social'
     end
-    glean.backend_object_update.record(
+    GLEAN.backend_object_update.record(
       user_agent: request.user_agent,
       ip_address: request.ip,
       object_type: 'api_request',

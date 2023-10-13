@@ -178,10 +178,3 @@ module Glean
     end
   end
 end
-
-glean = Glean::GleanEventsLogger.new(
-  app_id: 'moso-mastodon',
-  app_display_version: Mastodon::Version.to_s,
-  app_channel: ENV.fetch('RAILS_ENV', 'development'),
-  logger_options: STDOUT
-)
