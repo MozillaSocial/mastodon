@@ -46,6 +46,13 @@ module Glean
       @initial_seq = 0 # int - Using this to replicate the Glean seq logic
       @logger = Logger.new(logger_options)
 
+      # Logger configuration
+      @logger.formatter = proc do |severity, datetime, _progname, msg|
+        date_format = datetime.to_i
+        logger_name = 'glean'
+        "#{JSON.dump(Timestamp: date_format.to_s, Logger: logger_name.to_s, Type: GLEAN_EVENT_MOZLOG_TYPE.to_s, Severity: severity.ljust(5).to_s, Pid: Process.pid.to_s, Fields: msg)}\n"
+      end
+
       # Generated events
       # Event triggered by the backend to record the change in state of an object (e.g. API requests to the mozilla.social Mastodon server). In the future, we could potentially use this event to track changes in state to core Mastodon objects (e.g. accounts and posts).
       @backend_object_update = BackendObjectUpdateEvent.new(self)
@@ -70,6 +77,8 @@ module Glean
       event:
     )
       t_utc = Time.now.utc
+      # Increment sequence
+      @initial_seq += 1
       event_payload = {
         # `Unknown` fields below are required in the Glean schema, however they are not useful in server context.
         'client_info' => {
@@ -83,7 +92,7 @@ module Glean
           'app_channel' => @app_channel,
         },
         'ping_info' => {
-          'seq' => @initial_seq += 1,
+          'seq' => @initial_seq,
           'start_time' => t_utc,
           'end_time' => t_utc,
         },
@@ -109,11 +118,6 @@ module Glean
         'ip_address' => ip_address,
         'payload' => serialized_event_payload,
       }
-      @logger.formatter = proc do |severity, datetime, _progname, msg|
-        date_format = datetime.to_i
-        logger_name = 'glean'
-        "#{JSON.dump(Timestamp: date_format.to_s, Logger: logger_name.to_s, Type: GLEAN_EVENT_MOZLOG_TYPE.to_s, Severity: severity.ljust(5).to_s, Pid: Process.pid.to_s, Fields: msg)}\n"
-      end
       @logger.info(ping)
       return unless @initial_seq == 1_000_000_000
 
