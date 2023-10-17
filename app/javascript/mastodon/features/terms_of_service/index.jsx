@@ -114,8 +114,8 @@ class TermsOfService extends React.PureComponent {
               Mozilla.social account. However, we may retain such data to the
               extent necessary in order to enforce our policies or comply with
               the law, as described in the Mozilla.social Privacy Notice. This
-              will not delete your account, which you may delete
-              separately on your account <a href='https://accounts.firefox.com/'>settings page</a>.</p>
+              will not delete your Mozilla account, which you may delete
+              separately on your Mozilla account <a href='https://accounts.firefox.com/'>settings page</a>.</p>
 
             <h2 id='you-are-responsible'>You Are Responsible For the Content You Provide</h2>
 
