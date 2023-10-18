@@ -42,8 +42,6 @@ module Glean
       @app_id = app_id # string - Application Id to identify application per Glean standards
       @app_display_version = app_display_version # string - Version of application emitting the event
       @app_channel = app_channel # string - Application Id to identify application per Glean standards
-      @first_run_date = Time.now.utc
-      @initial_seq = 0 # int - Using this to replicate the Glean seq logic
       @logger = Logger.new(logger_options)
 
       # Logger configuration
@@ -77,13 +75,27 @@ module Glean
       event:
     )
       t_utc = Time.now.utc
-      # Increment sequence
-      @initial_seq += 1
+      # create raw metrics hash that can have nil values
+      metrics_raw = {
+        'string' => {
+          'identifiers.adjust_device_id' => identifiers_adjust_device_id,
+          'identifiers.fxa_account_id' => identifiers_fxa_account_id,
+          'identifiers.mastodon_account_handle' => identifiers_mastodon_account_handle,
+          'identifiers.mastodon_account_id' => identifiers_mastodon_account_id,
+          'identifiers.user_agent' => identifiers_user_agent,
+        },
+      }
+      # filter out key value pairs where value is nil
+      metrics_raw.each do |key, value|
+        metrics_raw[key] = value.compact.transform_values(&:to_s)
+      end
+      # filter out metrics with empty hashes
+      metrics = metrics_raw.reject { |_k, v| v.empty? }
       event_payload = {
         # `Unknown` fields below are required in the Glean schema, however they are not useful in server context.
         'client_info' => {
           'telemetry_sdk_build' => 'glean_parser v0.1.dev1004+g4822435',
-          'first_run_date' => @first_run_date,
+          'first_run_date' => 'Unknown',
           'os' => OS.name,
           'os_version' => 'Unknown',
           'architecture' => 'Unknown',
@@ -92,19 +104,11 @@ module Glean
           'app_channel' => @app_channel,
         },
         'ping_info' => {
-          'seq' => @initial_seq,
+          'seq' => 0,
           'start_time' => t_utc,
           'end_time' => t_utc,
         },
-        'metrics' => {
-          'string' => {
-            'identifiers.adjust_device_id' => identifiers_adjust_device_id,
-            'identifiers.fxa_account_id' => identifiers_fxa_account_id,
-            'identifiers.mastodon_account_handle' => identifiers_mastodon_account_handle,
-            'identifiers.mastodon_account_id' => identifiers_mastodon_account_id,
-            'identifiers.user_agent' => identifiers_user_agent,
-          },
-        },
+        'metrics' => metrics,
         'events' => event,
       }
       serialized_event_payload = event_payload.to_json
@@ -119,10 +123,6 @@ module Glean
         'payload' => serialized_event_payload,
       }
       @logger.info(ping)
-      return unless @initial_seq == 1_000_000_000
-
-      @initial_seq = 0
-      @first_run_date = t.utc
     end
     attr_accessor :backend_object_update
   end
@@ -156,17 +156,11 @@ module Glean
         {
           'category' => 'backend',
           'name' => 'object_update',
-          'timestamp' => Time.now.utc,
+          'timestamp' => (Time.now.utc.to_f * 1000).to_i,
           'extra' => [
-            {
-              'key' => 'object_type',
-              'value' => object_type,
-            },
-            {
-              'key' => 'object_state',
-              'value' => object_state,
-            },
-          ],
+            ['object_type', object_type],
+            ['object_state', object_state],
+          ].to_h,
         },
       ]
       @glean._record(

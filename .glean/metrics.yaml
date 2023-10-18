@@ -16,6 +16,7 @@ identifiers:
     notification_emails:
       - kdemtchouk@mozilla.com
     expires: never
+    lifetime: application
     send_in_pings:
       - events
 
@@ -30,6 +31,7 @@ identifiers:
     notification_emails:
       - kdemtchouk@mozilla.com
     expires: never
+    lifetime: application
     send_in_pings:
       - events
 
@@ -45,6 +47,7 @@ identifiers:
     notification_emails:
       - kdemtchouk@mozilla.com
     expires: never
+    lifetime: application
     send_in_pings:
       - events
 
@@ -59,6 +62,7 @@ identifiers:
     notification_emails:
       - kdemtchouk@mozilla.com
     expires: never
+    lifetime: application
     send_in_pings:
       - events
 
@@ -74,6 +78,7 @@ identifiers:
     notification_emails:
       - kdemtchouk@mozilla.com
     expires: never
+    lifetime: application
     send_in_pings:
       - events
 
