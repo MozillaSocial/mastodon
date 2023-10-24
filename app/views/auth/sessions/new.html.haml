@@ -2,11 +2,7 @@
   = t('auth.login')
 
 - content_for :header_tags do
-  - if sso_redirect
-    = render_initial_state
-    = javascript_pack_tag 'auto_redirect_sign-in', crossorigin: 'anonymous'
-  - else
-    = render partial: 'shared/og'
+  = render partial: 'shared/og'
 
 - unless omniauth_only?
   = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
@@ -25,14 +21,9 @@
 
 - if devise_mapping.omniauthable? && resource_class.omniauth_providers.any?
   .simple_form.alternative-login
-    - if sso_redirect
-      %h4= 'Redirecting...'
-    -else
-      %h4= omniauth_only? ? t('auth.log_in_with') : t('auth.or_log_in_with')
-
-      .actions
-        - resource_class.omniauth_providers.each do |provider|
-          = provider_sign_in_link(provider)
-
-- unless sso_redirect
+    = javascript_pack_tag 'auto_redirect_sign-in', crossorigin: 'anonymous'
+    = form_tag(sso_redirect, id: 'sso_form') do
+      = hidden_field_tag 'intent'
+      = submit_tag(t('auth.login'), class: 'button button--block')
+- else
   .form-footer= render 'auth/shared/links'
