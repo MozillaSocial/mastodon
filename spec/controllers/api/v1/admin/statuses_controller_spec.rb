@@ -31,7 +31,10 @@ RSpec.describe Api::V1::Admin::StatusesController do
 
   describe 'DELETE #destroy' do
     let(:scopes) { 'admin:write:statuses' }
-    let(:status) { Fabricate(:status) }
+    # Does this create a temporary file on file system?
+    let(:media) { Fabricate(:media_attachment)}
+    let(:status) { Fabricate(:status, media_attachments: [media], sensitive: true) }
+
 
     before do
       post :destroy, params: { id: status.id }
@@ -47,6 +50,12 @@ RSpec.describe Api::V1::Admin::StatusesController do
 
     it 'removes the status' do
       expect(Status.find_by(id: status.id)).to be_nil
+    end
+    it 'removes the media associated with status from media table and storage backend' do
+      # 
+    end
+    it 'does not error out if there is no media' do
+      #
     end
   end
 

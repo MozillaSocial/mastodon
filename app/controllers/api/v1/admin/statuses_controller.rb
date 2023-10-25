@@ -26,8 +26,12 @@ class Api::V1::Admin::StatusesController < Api::BaseController
       Tombstone.find_or_create_by(uri: @status.uri, account: @status.account, by_moderator: true)
     end
     json = render_to_body json: @status, serializer: REST::StatusSerializer, source_requested: true
-
-    RemovalWorker.perform_async(@status.id, { 'preserve' => @status.account.local?, 'immediate' => !@status.account.local? })
+    
+    # DOES THIS WORK???
+    # Immediately delete media attachments associated with the actioned status
+    # We don't want to rely on periodic garbage collection process or global TTL
+    AttachmentBatch.new(MediaAttachment, @status.media_attachments).delete
+    RemovalWorker.perform_async(@status.id, { 'preserve' => @status.account.local?, 'immediate' => true })
 
     render json: json
   end
