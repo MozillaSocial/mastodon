@@ -10,31 +10,9 @@
 require 'json'
 require 'securerandom'
 require 'logger'
-require 'rbconfig'
 
 # this will be used for identifying logs that need to forward to Moz Data Pipeline
 GLEAN_EVENT_MOZLOG_TYPE = 'glean-server-event'
-
-# helper module to get OS level info for logs
-module OS
-  def self.name
-    case RbConfig::CONFIG['host_os']
-
-    when /linux/
-      'Linux'
-    when /darwin/
-      'OS X'
-    when /mswin|mingw32|windows/
-      'Windows'
-    when /solaris/
-      'Solaris'
-    when /bsd/
-      'BSD'
-    else
-      RbConfig::CONFIG['host_os']
-    end
-  end
-end
 
 module Glean
   class GleanEventsLogger
@@ -96,7 +74,7 @@ module Glean
         'client_info' => {
           'telemetry_sdk_build' => 'glean_parser v0.1.dev1004+g4822435',
           'first_run_date' => 'Unknown',
-          'os' => OS.name,
+          'os' => 'Unkown',
           'os_version' => 'Unknown',
           'architecture' => 'Unknown',
           'app_build' => 'Unknown',
