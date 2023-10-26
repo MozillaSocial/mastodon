@@ -7,6 +7,8 @@ class InitialStateSerializer < ActiveModel::Serializer
              :media_attachments, :settings,
              :languages
 
+  attribute :critical_updates_pending, if: -> { object&.role&.can?(:view_devops) && SoftwareUpdate.check_enabled? }
+
   has_one :push_subscription, serializer: REST::WebPushSubscriptionSerializer
   has_one :role, serializer: REST::RoleSerializer
 
@@ -22,7 +24,7 @@ class InitialStateSerializer < ActiveModel::Serializer
       repository: Mastodon::Version.repository,
       source_url: instance_presenter.source_url,
       version: instance_presenter.version,
-      limited_federation_mode: Rails.configuration.x.whitelist_mode,
+      limited_federation_mode: Rails.configuration.x.limited_federation_mode,
       mascot: instance_presenter.mascot&.file&.url,
       profile_directory: Setting.profile_directory,
       trends_enabled: Setting.trends,
@@ -49,13 +51,11 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:use_blurhash]      = object.current_account.user.setting_use_blurhash
       store[:use_pending_items] = object.current_account.user.setting_use_pending_items
       store[:show_trends]       = Setting.trends && object.current_account.user.setting_trends
-      store[:crop_images]       = object.current_account.user.setting_crop_images
     else
       store[:auto_play_gif] = Setting.auto_play_gif
       store[:display_media] = Setting.display_media
       store[:reduce_motion] = Setting.reduce_motion
       store[:use_blurhash]  = Setting.use_blurhash
-      store[:crop_images]   = Setting.crop_images
     end
 
     store[:disabled_account_id] = object.disabled_account.id.to_s if object.disabled_account
@@ -84,7 +84,10 @@ class InitialStateSerializer < ActiveModel::Serializer
   def accounts
     store = {}
 
-    ActiveRecord::Associations::Preloader.new.preload([object.current_account, object.admin, object.owner, object.disabled_account, object.moved_to_account].compact, [:account_stat, :user, { moved_to_account: [:account_stat, :user] }])
+    ActiveRecord::Associations::Preloader.new(
+      records: [object.current_account, object.admin, object.owner, object.disabled_account, object.moved_to_account].compact,
+      associations: [:account_stat, :user, { moved_to_account: [:account_stat, :user] }]
+    )
 
     store[object.current_account.id.to_s]  = ActiveModelSerializers::SerializableResource.new(object.current_account, serializer: REST::AccountSerializer) if object.current_account
     store[object.admin.id.to_s]            = ActiveModelSerializers::SerializableResource.new(object.admin, serializer: REST::AccountSerializer) if object.admin
@@ -110,6 +113,6 @@ class InitialStateSerializer < ActiveModel::Serializer
   end
 
   def sso_redirect
-    "/auth/auth/#{Devise.omniauth_providers[0]}" if ENV['OMNIAUTH_ONLY'] == 'true' && Devise.omniauth_providers.length == 1
+    "/auth/auth/#{Devise.omniauth_providers[0]}" if ENV['ONE_CLICK_SSO_LOGIN'] == 'true' && ENV['OMNIAUTH_ONLY'] == 'true' && Devise.omniauth_providers.length == 1
   end
 end

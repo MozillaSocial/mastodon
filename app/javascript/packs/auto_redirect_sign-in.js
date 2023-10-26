@@ -1,18 +1,10 @@
-import { sso_redirect } from '../mastodon/initial_state';
 import ready from '../mastodon/ready';
 
 ready(() => {
-  let form = document.createElement('form');
-  form.action = sso_redirect;
-  form.method = 'post';
-  if (localStorage.getItem('mozsoc.auth_intent') === 'signup') {
-    let input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'intent';
-    input.value = 'signup';
-    form.append(input);
-  }
+  const form = document.querySelector('#sso_form')
+  form.insertAdjacentHTML('beforeend', '<h4>Redirecting...</h4>')
+  form.elements['commit'].style.setProperty('visibility', 'hidden')
+  form.elements['intent'].value = localStorage.getItem('mozsoc.auth_intent')
   localStorage.removeItem('mozsoc.auth_intent');
-  document.body.append(form);
   form.submit();
 });
