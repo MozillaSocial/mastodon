@@ -14,7 +14,7 @@ identifiers:
     data_reviews:
       - TBD
     notification_emails:
-      - kdemtchouk@mozilla.com
+      - mozillasocial-data-eng@mozilla.com
     expires: never
     lifetime: application
     send_in_pings:
@@ -29,7 +29,7 @@ identifiers:
     data_reviews:
       - TBD
     notification_emails:
-      - kdemtchouk@mozilla.com
+      - mozillasocial-data-eng@mozilla.com
     expires: never
     lifetime: application
     send_in_pings:
@@ -45,7 +45,7 @@ identifiers:
     data_reviews:
       - TBD
     notification_emails:
-      - kdemtchouk@mozilla.com
+      - mozillasocial-data-eng@mozilla.com
     expires: never
     lifetime: application
     send_in_pings:
@@ -60,7 +60,7 @@ identifiers:
     data_reviews:
       - TBD
     notification_emails:
-      - kdemtchouk@mozilla.com
+      - mozillasocial-data-eng@mozilla.com
     expires: never
     lifetime: application
     send_in_pings:
@@ -76,7 +76,7 @@ identifiers:
     data_reviews:
       - TBD
     notification_emails:
-      - kdemtchouk@mozilla.com
+      - mozillasocial-data-eng@mozilla.com
     expires: never
     lifetime: application
     send_in_pings:
@@ -97,7 +97,7 @@ backend:
     data_reviews:
       - TBD
     notification_emails:
-      - kdemtchouk@mozilla.com
+      - mozillasocial-data-eng@mozilla.com
     expires: never
     extra_keys:
       object_type:
