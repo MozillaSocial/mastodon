@@ -1,17 +1,6 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  # add instaniated Glean Logger
-  include Glean
-  GLEAN = Glean::GleanEventsLogger.new(
-    app_id: 'moso-mastodon',
-    app_display_version: Mastodon::Version.to_s,
-    app_channel: ENV.fetch('RAILS_ENV', 'development'),
-    logger_options: $stdout
-  )
-  # add glean server side logging for controller calls
-  around_action :emit_glean
-
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -184,39 +173,5 @@ class ApplicationController < ActionController::Base
 
   def set_cache_control_defaults
     response.cache_control.replace(private: true, no_store: true)
-  end
-
-  private
-
-  def emit_glean
-    yield
-  ensure
-    event = {
-      'user_id' => current_user&.id,
-      'path' => request.fullpath,
-      'controller' => controller_name,
-      'method' => request.method,
-      'status_code' => response.status,
-    }
-    username = current_user&.account&.username
-    domain = current_user&.account&.domain
-
-    handle = nil
-    unless username.nil?
-      domain = 'mozilla.social' if domain.nil?
-      handle = "#{username}@#{domain}"
-    end
-
-    GLEAN.backend_object_update.record(
-      user_agent: request.user_agent,
-      ip_address: request.ip,
-      object_type: 'api_request',
-      object_state: event.to_json,
-      identifiers_adjust_device_id: nil,
-      identifiers_fxa_account_id: nil,
-      identifiers_mastodon_account_handle: handle,
-      identifiers_mastodon_account_id: current_user&.account&.id,
-      identifiers_user_agent: request.user_agent
-    )
   end
 end
