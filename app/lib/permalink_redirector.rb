@@ -14,8 +14,6 @@ class PermalinkRedirector
       find_account_url_by_name(first_segment)
     elsif accounts_request? && record_integer_id_request?
       find_account_url_by_id(second_segment)
-    elsif @path.start_with?('/deck')
-      @path.delete_prefix('/deck')
     end
   end
 
@@ -54,7 +52,7 @@ class PermalinkRedirector
   end
 
   def path_segments
-    @path_segments ||= @path.delete_prefix('/deck').delete_prefix('/').split('/')
+    @path_segments ||= @path.delete_prefix('/').split('/')
   end
 
   def find_status_url_by_id(id)

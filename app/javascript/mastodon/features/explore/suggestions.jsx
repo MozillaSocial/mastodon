@@ -42,7 +42,7 @@ class Suggestions extends PureComponent {
     }
 
     return (
-      <div className='explore__suggestions scrollable' data-nosnippet>
+      <div className='explore__suggestions'>
         {isLoading ? <LoadingIndicator /> : suggestions.map(suggestion => (
           <AccountCard key={suggestion.get('account')} id={suggestion.get('account')} />
         ))}

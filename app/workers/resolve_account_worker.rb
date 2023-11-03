@@ -3,7 +3,7 @@
 class ResolveAccountWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: 'pull', lock: :until_executed, lock_ttl: 1.day.to_i
+  sidekiq_options queue: 'pull', lock: :until_executed
 
   def perform(uri)
     ResolveAccountService.new.call(uri)

@@ -35,12 +35,10 @@ class SoftwareUpdateCheckService < BaseService
   end
 
   def process_update_notices!(update_notices)
-    return if update_notices.blank? || update_notices['updatesAvailable'].nil?
+    return if update_notices.blank? || update_notices['updatesAvailable'].blank?
 
     # Clear notices that are not listed by the update server anymore
     SoftwareUpdate.where.not(version: update_notices['updatesAvailable'].pluck('version')).delete_all
-
-    return if update_notices['updatesAvailable'].blank?
 
     # Check if any of the notices is new, and issue notifications
     known_versions = SoftwareUpdate.where(version: update_notices['updatesAvailable'].pluck('version')).pluck(:version)
