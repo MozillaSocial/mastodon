@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   # add instaniated Glean Logger
   include Glean
   GLEAN = Glean::GleanEventsLogger.new(
-    app_id: 'moso-mastodon',
+    app_id: 'moso-mastodon-backend',
     app_display_version: Mastodon::Version.to_s,
     app_channel: ENV.fetch('RAILS_ENV', 'development'),
     logger_options: $stdout
