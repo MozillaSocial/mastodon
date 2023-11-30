@@ -47,6 +47,12 @@ class Admin::StatusBatchAction
       statuses.each do |status|
         status.discard_with_reblogs
         log_action(:destroy, status)
+
+        next unless status.with_media?
+
+        # Immediately remove public copy of media instead of waiting for
+        # the vacuum_orphaned_records job to take care of it later on
+        Admin::MediaAttachmentDeletionWorker.perform_inline(status.media_attachments)
       end
 
       if with_report?
