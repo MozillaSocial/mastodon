@@ -31,7 +31,8 @@ RSpec.describe Api::V1::Admin::StatusesController do
 
   describe 'DELETE #destroy' do
     let(:scopes) { 'admin:write:statuses' }
-    let(:status) { Fabricate(:status) }
+    let(:media)  { Fabricate(:media_attachment) }
+    let(:status) { Fabricate(:status, media_attachments: [media]) }
 
     before do
       post :destroy, params: { id: status.id }
@@ -47,6 +48,10 @@ RSpec.describe Api::V1::Admin::StatusesController do
 
     it 'removes the status' do
       expect(Status.find_by(id: status.id)).to be_nil
+    end
+
+    it 'removes associated media' do
+      expect(MediaAttachment.find_by(id: media.id)).to be_nil
     end
   end
 

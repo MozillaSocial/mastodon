@@ -24,7 +24,14 @@ class Api::V1::Admin::StatusesController < Api::BaseController
       @status.discard_with_reblogs
       log_action :destroy, @status
       Tombstone.find_or_create_by(uri: @status.uri, account: @status.account, by_moderator: true)
+
+      if @status.with_media?
+        # Immediately remove public copy of media instead of waiting for
+        # the vacuum_orphaned_records job to take care of it later on
+        Admin::MediaAttachmentDeletionWorker.perform_inline(@status.media_attachments)
+      end
     end
+
     json = render_to_body json: @status, serializer: REST::StatusSerializer, source_requested: true
 
     RemovalWorker.perform_async(@status.id, { 'preserve' => @status.account.local?, 'immediate' => !@status.account.local? })
