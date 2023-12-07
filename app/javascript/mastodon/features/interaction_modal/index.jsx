@@ -376,7 +376,6 @@ class InteractionModal extends React.PureComponent {
     }
 
     let signupButton;
-    let signUpOrSignInButton;
 
     if (sso_redirect) {
       signupButton = (
