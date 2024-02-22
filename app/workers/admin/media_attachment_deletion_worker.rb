@@ -5,7 +5,8 @@ class Admin::MediaAttachmentDeletionWorker
 
   sidekiq_options queue: 'pull', lock: :until_executed, lock_ttl: 1.week.to_i
 
-  def perform(media_attachments)
+  def perform(media_attachment_ids)
+    media_attachments = MediaAttachment.where(id: media_attachment_ids)
     AttachmentBatch.new(MediaAttachment, media_attachments).clear
   end
 end

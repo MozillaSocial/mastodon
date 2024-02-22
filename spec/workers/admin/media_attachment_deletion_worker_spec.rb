@@ -12,12 +12,12 @@ describe Admin::MediaAttachmentDeletionWorker do
     let!(:local_media) { Fabricate(:media_attachment, status: local_status) }
 
     it 'deletes remote media attachments' do
-      subject.perform([remote_media])
+      subject.perform([remote_media.id])
       expect(remote_media.reload.file).to be_blank
     end
 
     it 'deletes local media attachments' do
-      subject.perform([local_media])
+      subject.perform([local_media.id])
       expect(local_media.reload.file).to be_blank
     end
   end
