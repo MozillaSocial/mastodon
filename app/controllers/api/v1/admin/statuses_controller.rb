@@ -28,7 +28,7 @@ class Api::V1::Admin::StatusesController < Api::BaseController
       if @status.with_media?
         # Immediately remove public copy of media instead of waiting for
         # the vacuum_orphaned_records job to take care of it later on
-        Admin::MediaAttachmentDeletionWorker.perform_inline(@status.media_attachments)
+        Admin::MediaAttachmentDeletionWorker.perform_async(@status.media_attachments.map(&:id))
       end
     end
 
