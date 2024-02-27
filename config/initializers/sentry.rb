@@ -3,8 +3,10 @@
 # RAILS_ENV is set to 'production' for both stage and prod servers.
 # We use LOCAL_DOMAIN to differentiate for better Sentry logging.
 local_domain = ENV.fetch('LOCAL_DOMAIN', '')
+sentry_dsn = ENV.fetch('SENTRY_DSN', '')
 
-Sentry.init do |config|
+sentry_dsn.present? && Sentry.init do |config|
+  config.dsn = sentry_dsn
   config.environment = if local_domain['mozilla.social']
                          'production'
                        elsif local_domain['stage']
@@ -13,7 +15,6 @@ Sentry.init do |config|
                          'development'
                        end
 
-  config.dsn = 'https://def412573e2b44d39e73a130b09bb25a@o1069899.ingest.sentry.io/4506591637471232'
   config.breadcrumbs_logger = [:active_support_logger, :http_logger]
 
   # Set traces_sample_rate to 1.0 to capture 100%
