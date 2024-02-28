@@ -6,14 +6,6 @@
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   # Vanilla omniauth strategies
-  before_request_phase do |env|
-    request = Rack::Request.new(env)
-    env['omniauth.strategy'].options.merge!(
-      {
-        extra_authorize_params: request.params,
-      }
-    )
-  end
 end
 
 Devise.setup do |config|

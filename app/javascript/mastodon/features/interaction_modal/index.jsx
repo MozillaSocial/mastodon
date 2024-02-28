@@ -21,7 +21,7 @@ const messages = defineMessages({
 
 const mapStateToProps = (state, { accountId }) => ({
   displayNameHtml: state.getIn(['accounts', accountId, 'display_name_html']),
-  signupUrl: state.getIn(['server', 'server', 'registrations', 'url'], null) || '/auth/auth/openid_connect',
+  signupUrl: state.getIn(['server', 'server', 'registrations', 'url'], null) || '/auth/sign_up',
 });
 
 const mapDispatchToProps = (dispatch) => ({
