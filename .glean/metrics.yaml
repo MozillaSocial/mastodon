@@ -1,0 +1,110 @@
+# Any copyright is dedicated to the Public Domain.
+# https://creativecommons.org/publicdomain/zero/1.0/
+
+---
+$schema: moz://mozilla.org/schemas/glean/metrics/2-0-0
+
+identifiers:
+  fxa_account_id:
+    type: string
+    description: >
+      The user's FxA account ID, if available.
+    bugs:
+      - TBD
+    data_reviews:
+      - TBD
+    notification_emails:
+      - mozillasocial-data-eng@mozilla.com
+    expires: never
+    lifetime: application
+    send_in_pings:
+      - events
+
+  mastodon_account_id:
+    type: string
+    description: >
+      The user's numeric account ID from Mastodon.
+    bugs:
+      - TBD
+    data_reviews:
+      - TBD
+    notification_emails:
+      - mozillasocial-data-eng@mozilla.com
+    expires: never
+    lifetime: application
+    send_in_pings:
+      - events
+
+  mastodon_account_handle:
+    type: string
+    description: >
+      The user's full account handle, with domain.
+      For example, `account_name@mozilla.social`.
+    bugs:
+      - TBD
+    data_reviews:
+      - TBD
+    notification_emails:
+      - mozillasocial-data-eng@mozilla.com
+    expires: never
+    lifetime: application
+    send_in_pings:
+      - events
+
+  adjust_device_id:
+    type: string
+    description: >
+      The Adjust device ID for this user, if available.
+    bugs:
+      - TBD
+    data_reviews:
+      - TBD
+    notification_emails:
+      - mozillasocial-data-eng@mozilla.com
+    expires: never
+    lifetime: application
+    send_in_pings:
+      - events
+
+  user_agent:
+    type: string
+    description: >
+      The device user agent string.
+    bugs:
+      - TBD
+    data_reviews:
+      - TBD
+    notification_emails:
+      - mozillasocial-data-eng@mozilla.com
+    expires: never
+    lifetime: application
+    send_in_pings:
+      - events
+
+backend:
+  object_update:
+    type: event
+    description: >
+      Event triggered by the backend to record the change in state
+      of an object (e.g. API requests to the mozilla.social Mastodon
+      server).
+      In the future, we could potentially use this event to track
+      changes in state to core Mastodon objects (e.g. accounts and
+      posts).
+    bugs:
+      - TBD
+    data_reviews:
+      - TBD
+    notification_emails:
+      - mozillasocial-data-eng@mozilla.com
+    expires: never
+    extra_keys:
+      object_type:
+        description: >
+          A simple name to describe the object whose state changed.
+          For example, `api_request`.
+        type: string
+      object_state:
+        description: >
+          A JSON representation of the latest state of the object.
+        type: string

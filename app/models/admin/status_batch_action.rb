@@ -31,7 +31,7 @@ class Admin::StatusBatchAction
     case type
     when 'delete'
       handle_delete!
-    when 'mark_as_sensitive'
+    when 'mark_as_sensitive', 'sensitive'
       handle_mark_as_sensitive!
     when 'report'
       handle_report!
@@ -47,6 +47,12 @@ class Admin::StatusBatchAction
       statuses.each do |status|
         status.discard_with_reblogs
         log_action(:destroy, status)
+
+        next unless status.with_media?
+
+        # Immediately remove public copy of media instead of waiting for
+        # the vacuum_orphaned_records job to take care of it later on
+        Admin::MediaAttachmentDeletionWorker.perform_async(status.media_attachments.map(&:id))
       end
 
       if with_report?
