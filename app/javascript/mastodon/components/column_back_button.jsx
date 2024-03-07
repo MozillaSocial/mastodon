@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 
 import { FormattedMessage } from 'react-intl';
 
-import { Icon } from 'mastodon/components/icon';
+import { Icon }  from 'mastodon/components/icon';
 
 export default class ColumnBackButton extends PureComponent {
 
@@ -30,7 +30,7 @@ export default class ColumnBackButton extends PureComponent {
     }
   };
 
-  render() {
+  render () {
     const { multiColumn } = this.props;
 
     const component = (

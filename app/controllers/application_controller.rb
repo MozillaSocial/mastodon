@@ -34,7 +34,6 @@ class ApplicationController < ActionController::Base
   helper_method :limited_federation_mode?
   helper_method :body_class_string
   helper_method :skip_csrf_meta_tags?
-  helper_method :sso_redirect
 
   rescue_from ActionController::ParameterMissing, Paperclip::AdapterRegistry::NoHandlerError, with: :bad_request
   rescue_from Mastodon::NotPermittedError, with: :forbidden
@@ -88,7 +87,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(_resource_or_scope)
-    root_path
+    if ENV['OMNIAUTH_ONLY'] == 'true' && ENV['OIDC_ENABLED'] == 'true'
+      '/auth/auth/openid_connect/logout'
+    else
+      new_user_session_path
+    end
   end
 
   protected
@@ -143,10 +146,6 @@ class ApplicationController < ActionController::Base
 
   def omniauth_only?
     ENV['OMNIAUTH_ONLY'] == 'true'
-  end
-
-  def sso_redirect
-    "/auth/auth/#{Devise.omniauth_providers[0]}" if ENV['OMNIAUTH_ONLY'] == 'true' && Devise.omniauth_providers.length == 1
   end
 
   def sso_account_settings

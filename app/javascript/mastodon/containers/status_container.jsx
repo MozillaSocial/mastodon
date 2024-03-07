@@ -77,7 +77,7 @@ const makeMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
 
-  onReply(status, router) {
+  onReply (status, router) {
     dispatch((_, getState) => {
       let state = getState();
 
@@ -87,8 +87,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
           modalProps: {
             message: intl.formatMessage(messages.replyMessage),
             confirm: intl.formatMessage(messages.replyConfirm),
-            onConfirm: () => dispatch(replyCompose(status, router))
-          },
+            onConfirm: () => dispatch(replyCompose(status, router)) },
         }));
       } else {
         dispatch(replyCompose(status, router));
@@ -96,7 +95,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     });
   },
 
-  onModalReblog(status, privacy) {
+  onModalReblog (status, privacy) {
     if (status.get('reblogged')) {
       dispatch(unreblog(status));
     } else {
@@ -104,7 +103,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }
   },
 
-  onReblog(status, e) {
+  onReblog (status, e) {
     if ((e && e.shiftKey) || !boostModal) {
       this.onModalReblog(status);
     } else {
@@ -112,7 +111,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }
   },
 
-  onFavourite(status) {
+  onFavourite (status) {
     if (status.get('favourited')) {
       dispatch(unfavourite(status));
     } else {
@@ -120,7 +119,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }
   },
 
-  onBookmark(status) {
+  onBookmark (status) {
     if (status.get('bookmarked')) {
       dispatch(unbookmark(status));
     } else {
@@ -128,7 +127,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }
   },
 
-  onPin(status) {
+  onPin (status) {
     if (status.get('pinned')) {
       dispatch(unpin(status));
     } else {
@@ -136,7 +135,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }
   },
 
-  onEmbed(status) {
+  onEmbed (status) {
     dispatch(openModal({
       modalType: 'EMBED',
       modalProps: {
@@ -146,7 +145,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }));
   },
 
-  onDelete(status, history, withRedraft = false) {
+  onDelete (status, history, withRedraft = false) {
     if (!deleteModal) {
       dispatch(deleteStatus(status.get('id'), history, withRedraft));
     } else {
@@ -161,7 +160,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }
   },
 
-  onEdit(status, history) {
+  onEdit (status, history) {
     dispatch((_, getState) => {
       let state = getState();
       if (state.getIn(['compose', 'text']).trim().length !== 0) {
@@ -179,7 +178,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     });
   },
 
-  onTranslate(status) {
+  onTranslate (status) {
     if (status.get('translation')) {
       dispatch(undoStatusTranslation(status.get('id'), status.get('poll')));
     } else {
@@ -187,54 +186,54 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }
   },
 
-  onDirect(account, router) {
+  onDirect (account, router) {
     dispatch(directCompose(account, router));
   },
 
-  onMention(account, router) {
+  onMention (account, router) {
     dispatch(mentionCompose(account, router));
   },
 
-  onOpenMedia(statusId, media, index, lang) {
+  onOpenMedia (statusId, media, index, lang) {
     dispatch(openModal({
       modalType: 'MEDIA',
       modalProps: { statusId, media, index, lang },
     }));
   },
 
-  onOpenVideo(statusId, media, lang, options) {
+  onOpenVideo (statusId, media, lang, options) {
     dispatch(openModal({
       modalType: 'VIDEO',
       modalProps: { statusId, media, lang, options },
     }));
   },
 
-  onBlock(status) {
+  onBlock (status) {
     const account = status.get('account');
     dispatch(initBlockModal(account));
   },
 
-  onUnblock(account) {
+  onUnblock (account) {
     dispatch(unblockAccount(account.get('id')));
   },
 
-  onReport(status) {
+  onReport (status) {
     dispatch(initReport(status.get('account'), status));
   },
 
-  onAddFilter(status) {
+  onAddFilter (status) {
     dispatch(initAddFilter(status, { contextType }));
   },
 
-  onMute(account) {
+  onMute (account) {
     dispatch(initMuteModal(account));
   },
 
-  onUnmute(account) {
+  onUnmute (account) {
     dispatch(unmuteAccount(account.get('id')));
   },
 
-  onMuteConversation(status) {
+  onMuteConversation (status) {
     if (status.get('muted')) {
       dispatch(unmuteStatus(status.get('id')));
     } else {
@@ -242,7 +241,7 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }
   },
 
-  onToggleHidden(status) {
+  onToggleHidden (status) {
     if (status.get('hidden')) {
       dispatch(revealStatus(status.get('id')));
     } else {
@@ -250,11 +249,11 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }
   },
 
-  onToggleCollapsed(status, isCollapsed) {
+  onToggleCollapsed (status, isCollapsed) {
     dispatch(toggleStatusCollapse(status.get('id'), isCollapsed));
   },
 
-  onBlockDomain(domain) {
+  onBlockDomain (domain) {
     dispatch(openModal({
       modalType: 'CONFIRM',
       modalProps: {
@@ -265,15 +264,15 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     }));
   },
 
-  onUnblockDomain(domain) {
+  onUnblockDomain (domain) {
     dispatch(unblockDomain(domain));
   },
 
-  deployPictureInPicture(status, type, mediaProps) {
+  deployPictureInPicture (status, type, mediaProps) {
     dispatch(deployPictureInPicture(status.get('id'), status.getIn(['account', 'id']), type, mediaProps));
   },
 
-  onInteractionModal(type, status) {
+  onInteractionModal (type, status) {
     dispatch(openModal({
       modalType: 'INTERACTION',
       modalProps: {

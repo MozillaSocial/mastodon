@@ -18,7 +18,7 @@ const messages = defineMessages({
 });
 
 const mapDispatchToProps = (dispatch, { intl }) => ({
-  onLogout() {
+  onLogout () {
     dispatch(openModal({
       modalType: 'CONFIRM',
       modalProps: {
@@ -52,7 +52,7 @@ class LinkFooter extends PureComponent {
     return false;
   };
 
-  render() {
+  render () {
     const { signedIn, permissions } = this.context.identity;
     const { multiColumn } = this.props;
 

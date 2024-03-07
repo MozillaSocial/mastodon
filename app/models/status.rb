@@ -256,6 +256,8 @@ class Status < ApplicationRecord
   end
 
   def reported?
+    # diverged from upstream: status.reported? should be true even if the report against the Status is already resolved
+    # https://github.com/mastodon/mastodon/pull/27675/files#r1382155905
     @reported ||= Report.where(target_account: account).where('? = ANY(status_ids)', id).exists?
   end
 
