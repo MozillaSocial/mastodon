@@ -95,13 +95,11 @@ class AttachmentBatch
     # objects can be processed at once, so we have to potentially
     # separate them into multiple calls.
 
-    keys.each_slice(LIMIT) do |keys_slice|
-      logger.debug { "Deleting #{keys_slice.size} objects" }
-
-      bucket.delete_objects(delete: {
-        objects: keys_slice.map { |key| { key: key } },
-        quiet: true,
-      })
+    # Mozilla Social - delete individually instead of in batches,
+    # since GCP XML API doesn't support batch delete
+    logger.debug { "Deleting #{keys.size} objects" }
+    keys.each do |key|
+      bucket.object(key).delete
     end
   end
 
