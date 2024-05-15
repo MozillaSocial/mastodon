@@ -12,7 +12,7 @@ import { throttle, escapeRegExp } from 'lodash';
 import { openModal, closeModal } from 'mastodon/actions/modal';
 import api from 'mastodon/api';
 import Button from 'mastodon/components/button';
-import { Icon } from 'mastodon/components/icon';
+import { Icon }  from 'mastodon/components/icon';
 import { registrationsOpen, sso_redirect } from 'mastodon/initial_state';
 
 const messages = defineMessages({
@@ -21,15 +21,15 @@ const messages = defineMessages({
 
 const mapStateToProps = (state, { accountId }) => ({
   displayNameHtml: state.getIn(['accounts', accountId, 'display_name_html']),
-  signupUrl: state.getIn(['server', 'server', 'registrations', 'url'], null) || '/auth/auth/openid_connect',
+  signupUrl: state.getIn(['server', 'server', 'registrations', 'url'], null) || '/auth/sign_up',
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onSignupClick() {
     dispatch(closeModal({
-      modalType: undefined,
-      ignoreFocus: false,
-    }));
+        modalType: undefined,
+        ignoreFocus: false,
+      }));
     dispatch(openModal({ modalType: 'CLOSED_REGISTRATIONS' }));
   },
 });
@@ -57,7 +57,7 @@ const valueToDomain = value => {
     } catch {
       return undefined;
     }
-    // If the user writes their full handle including username
+  // If the user writes their full handle including username
   } else if (value.includes('@')) {
     if (value.replace(/^@/, '').split('@').length > 2) {
       return undefined;
@@ -127,7 +127,7 @@ class LoginForm extends React.PureComponent {
     try {
       new URL(url);
       return true;
-    } catch (_) {
+    } catch(_) {
       return false;
     }
   };
@@ -166,11 +166,11 @@ class LoginForm extends React.PureComponent {
     }
   };
 
-  componentDidMount() {
+  componentDidMount () {
     window.addEventListener('message', this.handleMessage);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener('message', this.handleMessage);
   }
 
@@ -200,38 +200,38 @@ class LoginForm extends React.PureComponent {
   handleKeyDown = (e) => {
     const { options, selectedOption } = this.state;
 
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
+    switch(e.key) {
+    case 'ArrowDown':
+      e.preventDefault();
 
-        if (options.length > 0) {
-          this.setState({ selectedOption: Math.min(selectedOption + 1, options.length - 1) });
-        }
+      if (options.length > 0) {
+        this.setState({ selectedOption: Math.min(selectedOption + 1, options.length - 1) });
+      }
 
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
 
-        if (options.length > 0) {
-          this.setState({ selectedOption: Math.max(selectedOption - 1, -1) });
-        }
+      if (options.length > 0) {
+        this.setState({ selectedOption: Math.max(selectedOption - 1, -1) });
+      }
 
-        break;
-      case 'Enter':
-        e.preventDefault();
+      break;
+    case 'Enter':
+      e.preventDefault();
 
-        if (selectedOption === -1) {
-          this.handleSubmit();
-        } else if (options.length > 0) {
-          this.setState({ value: options[selectedOption], error: false }, () => this.handleSubmit());
-        }
+      if (selectedOption === -1) {
+        this.handleSubmit();
+      } else if (options.length > 0) {
+        this.setState({ value: options[selectedOption], error: false }, () => this.handleSubmit());
+      }
 
-        break;
+      break;
     }
   };
 
   handleOptionClick = e => {
-    const index = Number(e.currentTarget.getAttribute('data-index'));
+    const index  = Number(e.currentTarget.getAttribute('data-index'));
     const option = this.state.options[index];
 
     e.preventDefault();
@@ -264,7 +264,7 @@ class LoginForm extends React.PureComponent {
     });
   }, 200, { leading: true, trailing: true });
 
-  render() {
+  render () {
     const { intl } = this.props;
     const { value, expanded, options, selectedOption, error, isSubmitting } = this.state;
     const domain = (valueToDomain(value) || '').trim();
@@ -276,7 +276,7 @@ class LoginForm extends React.PureComponent {
 
         <iframe
           ref={this.setIFrameRef}
-          style={{ display: 'none' }}
+          style={{display: 'none'}}
           src='/remote_interaction_helper'
           sandbox='allow-scripts allow-same-origin'
           title='remote interaction helper'
@@ -345,34 +345,34 @@ class InteractionModal extends React.PureComponent {
     this.props.onSignupClick();
   };
 
-  render() {
+  render () {
     const { url, type, displayNameHtml, signupUrl } = this.props;
 
     const name = <bdi dangerouslySetInnerHTML={{ __html: displayNameHtml }} />;
 
     let title, actionDescription, icon;
 
-    switch (type) {
-      case 'reply':
-        icon = <Icon id='reply' />;
-        title = <FormattedMessage id='interaction_modal.title.reply' defaultMessage="Reply to {name}'s post" values={{ name }} />;
-        actionDescription = <FormattedMessage id='interaction_modal.description.reply' defaultMessage='With an account on Mastodon, you can respond to this post.' />;
-        break;
-      case 'reblog':
-        icon = <Icon id='retweet' />;
-        title = <FormattedMessage id='interaction_modal.title.reblog' defaultMessage="Boost {name}'s post" values={{ name }} />;
-        actionDescription = <FormattedMessage id='interaction_modal.description.reblog' defaultMessage='With an account on Mastodon, you can boost this post to share it with your own followers.' />;
-        break;
-      case 'favourite':
-        icon = <Icon id='star' />;
-        title = <FormattedMessage id='interaction_modal.title.favourite' defaultMessage="Favorite {name}'s post" values={{ name }} />;
-        actionDescription = <FormattedMessage id='interaction_modal.description.favourite' defaultMessage='With an account on Mastodon, you can favorite this post to let the author know you appreciate it and save it for later.' />;
-        break;
-      case 'follow':
-        icon = <Icon id='user-plus' />;
-        title = <FormattedMessage id='interaction_modal.title.follow' defaultMessage='Follow {name}' values={{ name }} />;
-        actionDescription = <FormattedMessage id='interaction_modal.description.follow' defaultMessage='With an account on Mastodon, you can follow {name} to receive their posts in your home feed.' values={{ name }} />;
-        break;
+    switch(type) {
+    case 'reply':
+      icon = <Icon id='reply' />;
+      title = <FormattedMessage id='interaction_modal.title.reply' defaultMessage="Reply to {name}'s post" values={{ name }} />;
+      actionDescription = <FormattedMessage id='interaction_modal.description.reply' defaultMessage='With an account on Mastodon, you can respond to this post.' />;
+      break;
+    case 'reblog':
+      icon = <Icon id='retweet' />;
+      title = <FormattedMessage id='interaction_modal.title.reblog' defaultMessage="Boost {name}'s post" values={{ name }} />;
+      actionDescription = <FormattedMessage id='interaction_modal.description.reblog' defaultMessage='With an account on Mastodon, you can boost this post to share it with your own followers.' />;
+      break;
+    case 'favourite':
+      icon = <Icon id='star' />;
+      title = <FormattedMessage id='interaction_modal.title.favourite' defaultMessage="Favorite {name}'s post" values={{ name }} />;
+      actionDescription = <FormattedMessage id='interaction_modal.description.favourite' defaultMessage='With an account on Mastodon, you can favorite this post to let the author know you appreciate it and save it for later.' />;
+      break;
+    case 'follow':
+      icon = <Icon id='user-plus' />;
+      title = <FormattedMessage id='interaction_modal.title.follow' defaultMessage='Follow {name}' values={{ name }} />;
+      actionDescription = <FormattedMessage id='interaction_modal.description.follow' defaultMessage='With an account on Mastodon, you can follow {name} to receive their posts in your home feed.' values={{ name }} />;
+      break;
     }
 
     let signupButton;
@@ -388,7 +388,7 @@ class InteractionModal extends React.PureComponent {
         <a href={signupUrl} className='link-button'>
           <FormattedMessage id='sign_in_banner.create_account' defaultMessage='Create account' />
         </a>
-      )
+      );
     } else {
       signupButton = (
         <button className='link-button' onClick={this.handleSignupClick}>

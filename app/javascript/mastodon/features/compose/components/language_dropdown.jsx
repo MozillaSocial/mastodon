@@ -48,7 +48,7 @@ class LanguageDropdownMenu extends PureComponent {
     }
   };
 
-  componentDidMount() {
+  componentDidMount () {
     document.addEventListener('click', this.handleDocumentClick, { capture: true });
     document.addEventListener('touchend', this.handleDocumentClick, listenerOptions);
 
@@ -62,7 +62,7 @@ class LanguageDropdownMenu extends PureComponent {
     });
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     document.removeEventListener('click', this.handleDocumentClick, { capture: true });
     document.removeEventListener('touchend', this.handleDocumentClick, listenerOptions);
   }
@@ -79,7 +79,7 @@ class LanguageDropdownMenu extends PureComponent {
     this.setState({ searchValue: target.value });
   };
 
-  search() {
+  search () {
     const { languages, value, frequentlyUsedLanguages } = this.props;
     const { searchValue } = this.state;
 
@@ -109,7 +109,7 @@ class LanguageDropdownMenu extends PureComponent {
     }).map(result => result.obj);
   }
 
-  frequentlyUsed() {
+  frequentlyUsed () {
     const { languages, value } = this.props;
     const current = languages.find(lang => lang[0] === value);
     const results = [];
@@ -136,32 +136,32 @@ class LanguageDropdownMenu extends PureComponent {
 
     let element = null;
 
-    switch (e.key) {
-      case 'Escape':
-        onClose();
-        break;
-      case 'Enter':
-        this.handleClick(e);
-        break;
-      case 'ArrowDown':
-        element = this.listNode.childNodes[index + 1] || this.listNode.firstChild;
-        break;
-      case 'ArrowUp':
+    switch(e.key) {
+    case 'Escape':
+      onClose();
+      break;
+    case 'Enter':
+      this.handleClick(e);
+      break;
+    case 'ArrowDown':
+      element = this.listNode.childNodes[index + 1] || this.listNode.firstChild;
+      break;
+    case 'ArrowUp':
+      element = this.listNode.childNodes[index - 1] || this.listNode.lastChild;
+      break;
+    case 'Tab':
+      if (e.shiftKey) {
         element = this.listNode.childNodes[index - 1] || this.listNode.lastChild;
-        break;
-      case 'Tab':
-        if (e.shiftKey) {
-          element = this.listNode.childNodes[index - 1] || this.listNode.lastChild;
-        } else {
-          element = this.listNode.childNodes[index + 1] || this.listNode.firstChild;
-        }
-        break;
-      case 'Home':
-        element = this.listNode.firstChild;
-        break;
-      case 'End':
-        element = this.listNode.lastChild;
-        break;
+      } else {
+        element = this.listNode.childNodes[index + 1] || this.listNode.firstChild;
+      }
+      break;
+    case 'Home':
+      element = this.listNode.firstChild;
+      break;
+    case 'End':
+      element = this.listNode.lastChild;
+      break;
     }
 
     if (element) {
@@ -177,33 +177,33 @@ class LanguageDropdownMenu extends PureComponent {
 
     let element = null;
 
-    switch (e.key) {
-      case 'Tab':
-      case 'ArrowDown':
-        element = this.listNode.firstChild;
+    switch(e.key) {
+    case 'Tab':
+    case 'ArrowDown':
+      element = this.listNode.firstChild;
 
-        if (element) {
-          element.focus();
-          e.preventDefault();
-          e.stopPropagation();
-        }
+      if (element) {
+        element.focus();
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
-        break;
-      case 'Enter':
-        element = this.listNode.firstChild;
+      break;
+    case 'Enter':
+      element = this.listNode.firstChild;
 
-        if (element) {
-          onChange(element.getAttribute('data-index'));
-          onClose();
-        }
-        break;
-      case 'Escape':
-        if (searchValue !== '') {
-          e.preventDefault();
-          this.handleClear();
-        }
+      if (element) {
+        onChange(element.getAttribute('data-index'));
+        onClose();
+      }
+      break;
+    case 'Escape':
+      if (searchValue !== '') {
+        e.preventDefault();
+        this.handleClear();
+      }
 
-        break;
+      break;
     }
   };
 
@@ -221,7 +221,7 @@ class LanguageDropdownMenu extends PureComponent {
     );
   };
 
-  render() {
+  render () {
     const { intl } = this.props;
     const { searchValue } = this.state;
     const isSearching = searchValue !== '';
@@ -294,7 +294,7 @@ class LanguageDropdown extends PureComponent {
     this.setState({ placement: state.placement });
   };
 
-  render() {
+  render () {
     const { value, intl, frequentlyUsedLanguages } = this.props;
     const { open, placement } = this.state;
 

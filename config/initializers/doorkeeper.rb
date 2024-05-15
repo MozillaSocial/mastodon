@@ -176,10 +176,8 @@ Doorkeeper.configure do
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
   # For example if dealing with a trusted application.
-  redirect_uri_whitelist = ENV['REDIRECT_URI_WHITELIST']&.split('|').freeze
-
   skip_authorization do |resource_owner, client|
-    client.application.superapp? || redirect_uri_whitelist&.include?(client.application.redirect_uri)
+    client.application.superapp?
   end
 
   # WWW-Authenticate Realm (default "Doorkeeper").

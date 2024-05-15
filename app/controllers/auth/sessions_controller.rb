@@ -11,9 +11,6 @@ class Auth::SessionsController < Devise::SessionsController
   skip_before_action :require_functional!
   skip_before_action :update_user_sign_in
 
-  # Allow any client to call /auth/sign_out via a delete call
-  skip_before_action :verify_authenticity_token, only: [:destroy]
-
   prepend_before_action :check_suspicious!, only: [:create]
 
   include TwoFactorAuthenticationConcern
